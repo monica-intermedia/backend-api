@@ -3,7 +3,7 @@ const { DataTypes } = Sequelize;
 const db = require("../../config/config");
 const { v4: uuidv4 } = require("uuid");
 
-const PositionModel = db.define("jabatan", {
+const JabatanModels = db.define("jabatan", {
   jabatanId: {
     type: DataTypes.UUID,
     allowNull: false,
@@ -16,8 +16,8 @@ const PositionModel = db.define("jabatan", {
   },
 });
 
-PositionModel.beforeCreate((jabatan) => {
+JabatanModels.beforeCreate((jabatan) => {
   jabatan.jabatanId = `${uuidv4()}`;
 });
 
-module.exports = PositionModel;
+module.exports = JabatanModels;

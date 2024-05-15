@@ -1,4 +1,5 @@
 const PegawaiModels = require("../../models/pegawai/pegawai.models");
+const JabatanModels = require("../../models/pegawai/jabatan.models");
 const {
   handle500,
   handle200,
@@ -8,7 +9,9 @@ const {
 
 const getPegawai = async (req, res) => {
   try {
-    const data = await PegawaiModels.findAll();
+    const data = await PegawaiModels.findAll({
+      include: { model: JabatanModels, attributes: ["jabatan"] },
+    });
     if (data && data.length > 0) {
       handle200(req, res, data, "Successfully retrieved all data");
     } else {
@@ -42,18 +45,19 @@ const getPegawaiById = async (req, res) => {
 
 const createPegawai = async (req, res) => {
   try {
-    const { nip, jabatan, alamat, email, handphone } = req.body;
+    const { nip, jabatanName, alamat, email, handphone, jabatanId } = req.body;
 
-    if (!nip || !jabatan || !alamat || !email || !handphone) {
+    if (!nip || !jabatanName || !alamat || !email || !handphone || !jabatanId) {
       return handle400(req, res, "Invalid parameters: all fields are required");
     }
 
     const data = await PegawaiModels.create({
       nip: nip,
-      jabatan: jabatan,
+      jabatanName: jabatanName,
       alamat: alamat,
       email: email,
       handphone: handphone,
+      jabatanId: jabatanId,
     });
 
     if (data) {
