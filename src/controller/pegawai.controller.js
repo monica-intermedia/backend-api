@@ -1,11 +1,11 @@
-const PegawaiModels = require("../../models/pegawai/pegawai.models");
-const JabatanModels = require("../../models/pegawai/jabatan.models");
+const PegawaiModels = require("../models/pegawai.models");
+const JabatanModels = require("../models/jabatan.models");
 const {
   handle500,
   handle200,
   handle400,
   handle201,
-} = require("../../utils/response");
+} = require("../utils/response");
 
 const getPegawai = async (req, res) => {
   try {

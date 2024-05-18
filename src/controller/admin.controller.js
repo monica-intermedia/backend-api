@@ -1,11 +1,11 @@
 const bcrypt = require("bcrypt");
-const Admin = require("../models/adminModels");
+const Admin = require("../models/admin.models");
 const {
   handle200,
   handle201,
   handle400,
   handle500,
-} = require("../../utils/response");
+} = require("../utils/response");
 
 const getAdmin = async (req, res) => {
   const data = await Admin.findAll();
@@ -14,7 +14,6 @@ const getAdmin = async (req, res) => {
     const isData = data
       ? handle200(req, res, data, "all")
       : handle400(req, res, "invalid paramaters");
-
     return isData;
   } catch (error) {
     handle500(req, res, error);

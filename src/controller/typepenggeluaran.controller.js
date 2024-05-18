@@ -1,11 +1,11 @@
 const { where } = require("sequelize");
-const TypePengeluaran = require("../../models/transaksi/typePengeluaran.model");
+const TypePengeluaran = require("../models/typePengeluaran.model");
 const {
   handle200,
   handle201,
   handle400,
   handle500,
-} = require("../../utils/response");
+} = require("../utils/response");
 
 // tipe pengeluaran
 const getAllPengeluranByTipe = async (req, res) => {

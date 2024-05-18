@@ -116,7 +116,9 @@ const deletePembelian = async (req, res) => {
       await Pembelian.destroy({
         where: { karyawanId },
       });
+
       handle200(req, res, data, "delete");
+
     } else {
       handle400(req, res, "fail delete karyawan");
     }

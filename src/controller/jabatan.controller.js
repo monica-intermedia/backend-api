@@ -1,10 +1,10 @@
-const JabatanModels = require("../../models/pegawai/jabatan.models");
+const JabatanModels = require("../models/jabatan.models");
 const {
   handle200,
   handle201,
   handle400,
   handle500,
-} = require("../../utils/response");
+} = require("../utils/response");
 
 const getJabatan = async (req, res) => {
   const data = await JabatanModels.findAll();

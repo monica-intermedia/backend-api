@@ -1,11 +1,11 @@
-const Pengeluaran = require("../../models/transaksi/pengeluaran.models");
-const TypePengeluaran = require("../../models/transaksi/typePengeluaran.model");
+const Pengeluaran = require("../models/pengeluaran.models");
+const TypePengeluaran = require("../models/typePengeluaran.model");
 const {
   handle200,
   handle201,
   handle400,
   handle500,
-} = require("../../utils/response");
+} = require("../utils/response");
 
 const getPengeluaran = async (req, res) => {
   const data = await Pengeluaran.findAll({

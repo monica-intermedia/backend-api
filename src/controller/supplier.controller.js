@@ -1,10 +1,10 @@
-const SupplierModel = require("../../models/pelanggan/supplier.models");
+const SupplierModel = require("../models/supplier.models");
 const {
   handle200,
   handle201,
   handle400,
   handle500,
-} = require("../../utils/response");
+} = require("../utils/response");
 
 const getCountSupplier = async (req, res) => {
   try {

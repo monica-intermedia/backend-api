@@ -1,6 +1,6 @@
 const { Sequelize } = require("sequelize");
 const { DataTypes } = Sequelize;
-const db = require("../../config/config");
+const db = require("../config/config");
 const { v4: uuidv4 } = require("uuid");
 
 const JabatanModels = db.define("jabatan", {
