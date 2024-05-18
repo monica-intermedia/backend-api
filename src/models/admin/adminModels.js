@@ -1,35 +1,31 @@
 const { Sequelize } = require("sequelize");
 const { DataTypes } = Sequelize;
-const db = require("../config/config");
+const db = require("../../config/config");
 const { v4: uuidv4 } = require("uuid");
 
-const Barang = db.define("barang", {
-  barangId: {
+const AdminModels = db.define("admin", {
+  id: {
     type: DataTypes.UUID,
     allowNull: false,
     primaryKey: true,
     defaultValue: Sequelize.UUIDV4,
   },
-  kodeBarang: {
+  name: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  namaBarang: {
+  email: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  harga: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  stock: {
-    type: DataTypes.INTEGER,
+  password: {
+    type: DataTypes.STRING,
     allowNull: false,
   },
 });
 
-Barang.beforeCreate((barang) => {
-  barang.barangId = `${uuidv4()}`;
+AdminModels.beforeCreate((admin) => {
+  admin.id = `${uuidv4()}`;
 });
 
-module.exports = Barang;
+module.exports = AdminModels;

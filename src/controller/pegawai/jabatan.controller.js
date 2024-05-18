@@ -1,4 +1,4 @@
-const PositionModel = require("../../models/pegawai/jabatan.models");
+const JabatanModels = require("../../models/pegawai/jabatan.models");
 const {
   handle200,
   handle201,
@@ -7,7 +7,7 @@ const {
 } = require("../../utils/response");
 
 const getJabatan = async (req, res) => {
-  const data = await PositionModel.findAll();
+  const data = await JabatanModels.findAll();
 
   try {
     const isData = data
@@ -22,7 +22,7 @@ const getJabatan = async (req, res) => {
 
 const getJabatanById = async (req, res) => {
   const { jabatanId } = req.params;
-  const data = await PositionModel.findOne({ where: { jabatanId: jabatanId } });
+  const data = await JabatanModels.findOne({ where: { jabatanId: jabatanId } });
 
   try {
     const isData = data
@@ -38,7 +38,7 @@ const getJabatanById = async (req, res) => {
 const getJabatanByName = async (req, res) => {
   try {
     const { jabatan } = req.body;
-    const data = await PositionModel.findAll({ where: { jabatan: jabatan } });
+    const data = await JabatanModels.findAll({ where: { jabatan: jabatan } });
 
     const isData = data
       ? handle200(req, res, data, "success get jabatan")
@@ -54,13 +54,13 @@ const createJabatan = async (req, res) => {
   try {
     const { jabatan } = req.body;
 
-    const check = await PositionModel.findAll({ where: { jabatan: jabatan } });
+    const check = await JabatanModels.findAll({ where: { jabatan: jabatan } });
 
     if (check.length > 0) {
       return handle400(req, res, "Position already available");
     }
 
-    const data = await PositionModel.create({
+    const data = await JabatanModels.create({
       jabatan,
     });
 
@@ -75,7 +75,7 @@ const editJabatan = async (req, res) => {
     const { jabatanId } = req.params;
     const { jabatan } = req.body;
 
-    const updateJabatan = await PositionModel.findByPk(jabatanId);
+    const updateJabatan = await JabatanModels.findByPk(jabatanId);
 
     if (!updateJabatan) {
       return handle400(req, res, "Position not found");
@@ -93,7 +93,7 @@ const deleteJabatan = async (req, res) => {
   try {
     const { jabatanId } = req.params;
 
-    const position = await PositionModel.findOne({
+    const position = await JabatanModels.findOne({
       where: { jabatanId: jabatanId },
     });
 

@@ -4,20 +4,20 @@ const db = require("../../config/config");
 const { v4: uuidv4 } = require("uuid");
 
 const JabatanModels = db.define("jabatan", {
-  jabatanId: {
+  id: {
     type: DataTypes.UUID,
     allowNull: false,
     primaryKey: true,
     defaultValue: Sequelize.UUIDV4,
   },
   jabatan: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(30),
     allowNull: false,
   },
 });
 
 JabatanModels.beforeCreate((jabatan) => {
-  jabatan.jabatanId = `${uuidv4()}`;
+  jabatan.id = `${uuidv4()}`;
 });
 
 module.exports = JabatanModels;

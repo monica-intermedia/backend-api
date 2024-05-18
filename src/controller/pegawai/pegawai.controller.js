@@ -45,15 +45,15 @@ const getPegawaiById = async (req, res) => {
 
 const createPegawai = async (req, res) => {
   try {
-    const { nip, jabatanName, alamat, email, handphone, jabatanId } = req.body;
+    const { nip, Name, alamat, email, handphone, jabatanId } = req.body;
 
-    if (!nip || !jabatanName || !alamat || !email || !handphone || !jabatanId) {
+    if (!nip || !Name || !alamat || !email || !handphone || !jabatanId) {
       return handle400(req, res, "Invalid parameters: all fields are required");
     }
 
     const data = await PegawaiModels.create({
       nip: nip,
-      jabatanName: jabatanName,
+      Name: Name,
       alamat: alamat,
       email: email,
       handphone: handphone,
@@ -70,4 +70,48 @@ const createPegawai = async (req, res) => {
   }
 };
 
-module.exports = { getPegawai, getPegawaiById, createPegawai };
+const editPegawai = async (req, res) => {
+  const { pegawaiId } = req.params;
+  const { nip, Name, alamat, email, handphone, jabatanId } = req.body;
+
+  try {
+    const updatePegawai = await PegawaiModels.findByPk(pegawaiId);
+
+    if (!updatePegawai) {
+      handle400(req, res, "pegawaiId undefined");
+    }
+
+    await updatePegawai.update({
+      nip: nip,
+      Name: Name,
+      alamat: alamat,
+      email: email,
+      handphone: handphone,
+      jabatanId: jabatanId,
+    });
+
+    return handle201(req, res, updatePegawai, "success update");
+  } catch (error) {
+    handle500(req, res, error);
+  }
+};
+
+const deletePegawai = async (req, res) => {
+  const { pegawaiId } = req.params;
+  const data = await PegawaiModels.findOne({ where: { pegawaiId: pegawaiId } });
+
+  if (data) {
+    await data.destroy();
+    return handle201(req, res, data, "delete");
+  } else {
+    return handle400(req, res, "position not found");
+  }
+};
+
+module.exports = {
+  getPegawai,
+  getPegawaiById,
+  createPegawai,
+  deletePegawai,
+  editPegawai,
+};

@@ -5,36 +5,58 @@ const { v4: uuidv4 } = require("uuid");
 const JabatanModels = require("../../models/pegawai/jabatan.models");
 
 const PegawaiModels = db.define("pegawai", {
-  pegawaiId: {
+  id: {
     type: DataTypes.UUID,
     allowNull: false,
     primaryKey: true,
     defaultValue: Sequelize.UUIDV4,
   },
   nip: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(20),
     allowNull: false,
   },
-  Name: {
-    type: DataTypes.STRING,
+  name: {
+    type: DataTypes.STRING(50),
     allowNull: false,
   },
   alamat: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(255),
     allowNull: false,
   },
   email: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(70),
     allowNull: false,
+    unique: true,
+    validate: {
+      isEmail: true,
+    },
+    set(value) {
+      this.setDataValue("email", value.toLoweCase());
+    },
   },
   handphone: {
-    type: DataTypes.BIGINT,
+    type: DataTypes.BIGINT(15),
     allowNull: false,
   },
-  jabatanId: {
-    type: DataTypes.UUID,
-    defaultValue: Sequelize.UUIDV4,
+  jenisKelamin: {
+    type: DataTypes.ENUM(["laki-laki", "perempuan"]),
     allowNull: false,
+  },
+  gaji: {
+    type: DataTypes.BIGINT(10),
+    allowNull: false,
+  },
+  password: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
+  },
+  id_jabatan: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    references: {
+      model: JabatanModels,
+      key: "id",
+    },
   },
 });
 

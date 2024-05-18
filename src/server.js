@@ -9,7 +9,7 @@ const adminRoute = require("./routes/AdminRoute");
 const authRoute = require("./routes/authRoute");
 const karyawanRoute = require("./routes/karyawanRoute");
 const positionRoute = require("./routes/positionRoute");
-const supplierRoute = require("./routes/supplierRoute");
+const supplierRoute = require("./routes/pelangan/supplier.route");
 const barangRoute = require("./routes/barangRoute");
 const pembelianRoute = require("./routes/pembelianRoute");
 const transaksiRoute = require("./routes/transaksi.route");
@@ -18,7 +18,7 @@ const pegawaiRoute = require("./routes/pegawai/pegawai.route");
 
 // migrate DB
 const db = require("./config/config");
-db.sync();
+db.sync({ force: true });
 
 app.use(cors());
 app.use(express.json());

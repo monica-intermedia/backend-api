@@ -5,7 +5,7 @@ const {
   handle201,
   handle400,
   handle500,
-} = require("../utils/response");
+} = require("../../utils/response");
 
 const getAdmin = async (req, res) => {
   const data = await Admin.findAll();

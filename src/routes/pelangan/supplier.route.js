@@ -4,10 +4,10 @@ const {
   getSupplier,
   createSupplier,
   getCountSupplier,
-} = require("../controller/supplierController");
+} = require("../../controller/pelanggan/supplier.controller");
 
-router.get("/supplier", getSupplier);
+router.get("/pelanggan/supplier", getSupplier);
 router.get("/supplier/count", getCountSupplier);
-router.post("/supplier", createSupplier);
+router.post("/pelanggan/supplier", createSupplier);
 
 module.exports = router;

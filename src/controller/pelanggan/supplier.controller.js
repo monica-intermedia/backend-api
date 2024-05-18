@@ -1,14 +1,14 @@
-const SupplierModel = require("../models/supplierModel");
+const SupplierModel = require("../../models/pelanggan/supplier.models");
 const {
   handle200,
   handle201,
   handle400,
   handle500,
-} = require("../utils/response");
+} = require("../../utils/response");
 
-const getSupplier = async (req, res) => {
+const getCountSupplier = async (req, res) => {
   try {
-    const data = await SupplierModel.findAll();
+    const data = await SupplierModel.count();
     const isData = data
       ? handle200(req, res, data, "position")
       : handle400(req, res, "invalid parameters");
@@ -18,9 +18,9 @@ const getSupplier = async (req, res) => {
   }
 };
 
-const getCountSupplier = async (req, res) => {
+const getSupplier = async (req, res) => {
   try {
-    const data = await SupplierModel.count();
+    const data = await SupplierModel.findAll();
     const isData = data
       ? handle200(req, res, data, "position")
       : handle400(req, res, "invalid parameters");
