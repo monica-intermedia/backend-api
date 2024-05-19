@@ -6,7 +6,7 @@ const {
   createPegawai,
   deletePegawai,
   editPegawai,
-} = require("../../controller/pegawai/pegawai.controller");
+} = require("../controller/pegawai.controller");
 
 router.get("/pegawai/pegawai", getPegawai);
 router.get("/pegawai/pegawai/:pegawaiId", getPegawaiById);

@@ -23,7 +23,6 @@ const getJabatan = async (req, res) => {
 const getJabatanById = async (req, res) => {
   const { jabatanId } = req.params;
   const data = await JabatanModels.findOne({ where: { jabatanId: jabatanId } });
-
   try {
     const isData = data
       ? handle200(req, res, data, "all")

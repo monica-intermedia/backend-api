@@ -1,6 +1,5 @@
-const { Sequelize } = require("sequelize");
-const { DataTypes } = Sequelize;
-const db = require("../../config/config");
+const db = require("../config/config");
+const { Sequelize, DataTypes } = require("sequelize");
 const { v4: uuidv4 } = require("uuid");
 
 const BarangModels = db.define("barang", {
@@ -8,7 +7,7 @@ const BarangModels = db.define("barang", {
     type: DataTypes.UUID,
     allowNull: false,
     primaryKey: true,
-    defaultValue: Sequelize.UUIDV4,
+    defaultValue: Sequelize.UUID,
   },
   kodeBarang: {
     type: DataTypes.STRING(30),
@@ -22,14 +21,14 @@ const BarangModels = db.define("barang", {
     type: DataTypes.BIGINT(15),
     allowNull: false,
   },
-  stock: {
+  stok: {
     type: DataTypes.INTEGER(5),
     allowNull: false,
   },
 });
 
 BarangModels.beforeCreate((barang) => {
-  barang.id = `${uuidv4()}`;
+  barang.id = `${uuidv4}`;
 });
 
 module.exports = BarangModels;

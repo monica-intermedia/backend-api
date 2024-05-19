@@ -1,12 +1,12 @@
 const jwt = require("jsonwebtoken");
-const passwordCheck = require("../../../utils/passwordCheck");
-const blacklist = require("../../middleware/blacklist");
+const passwordCheck = require("../utils/passwordCheck");
+const blacklist = require("../middleware/blacklist");
 const {
   handle200,
   handle201,
   handle400,
   handle500,
-} = require("../../utils/response");
+} = require("../utils/response");
 
 const login = async (req, res) => {
   try {

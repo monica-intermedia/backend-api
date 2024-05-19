@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const adminModels = require("../models/adminModels");
+const adminModels = require("../models/admin.models");
 
 const passwordCheck = async (email, password) => {
   const userData = await adminModels.findOne({ where: { email: email } });

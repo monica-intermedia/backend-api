@@ -1,36 +1,46 @@
-const db = require("../../config/config");
+const db = require("../config/config");
 const { Sequelize } = require("sequelize");
-const { Datatypes } = Sequelize;
+const { DataTypes } = Sequelize;
 const { v4: uuidv4 } = require("uuid");
 
 const PelangganModels = db.define("pelanggan", {
   id: {
-    type: Datatypes.UUID,
+    type: DataTypes.UUID,
     allowNull: false,
     primaryKey: true,
     defaultValue: Sequelize.UUID,
   },
   name: {
-    type: Datatypes.STRING(100),
+    type: DataTypes.STRING(100),
     allowNull: false,
   },
   alamat: {
-    type: Datatypes.STRING(150),
+    type: DataTypes.STRING(150),
     allowNull: false,
   },
   email: {
-    type: Datatypes.STRING(70),
+    type: DataTypes.STRING(70),
     allowNull: false,
     unique: true,
+    validate: {
+      isEmail: true,
+    },
+    set(value) {
+      this.setDataValue("email", value.toLoweCase());
+    },
   },
   handphone: {
-    type: Datatypes.STRING(15),
+    type: DataTypes.STRING(15),
+    allowNull: false,
+  },
+  password: {
+    type: DataTypes.STRING(50),
     allowNull: false,
   },
 });
 
-Supplier.beforeCreate((supplier) => {
-  supplier.supplierId = `${uuidv4}`;
+PelangganModels.beforeCreate((pelanggan) => {
+  pelanggan.id = `${uuidv4}`;
 });
 
 module.exports = PelangganModels;

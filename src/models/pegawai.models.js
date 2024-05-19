@@ -64,9 +64,7 @@ PegawaiModels.beforeCreate((pegawai) => {
   pegawai.pegawaiId = uuidv4();
 });
 
-JabatanModels.hasMany(PegawaiModels, { onDelete: "cascade" });
-PegawaiModels.belongsTo(JabatanModels, {
-  foreignKey: "jabatanId",
-});
+JabatanModels.hasMany(PegawaiModels, { foreignKey: "id_jabatan" });
+PegawaiModels.belongsTo(JabatanModels, { foreignKey: "id_jabatan" });
 
 module.exports = PegawaiModels;
