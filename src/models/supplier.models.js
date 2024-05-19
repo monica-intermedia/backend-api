@@ -10,7 +10,7 @@ const SupplierModels = db.define("supplier", {
     primaryKey: true,
     defaultValue: Sequelize.UUIDV4,
   },
-  namaSupplier: {
+  name: {
     type: DataTypes.STRING(100),
     allowNull: false,
   },
@@ -26,7 +26,7 @@ const SupplierModels = db.define("supplier", {
       isEmail: true,
     },
     set(value) {
-      this.setDataValue("email", value.toLoweCase());
+      this.setDataValue("email", value.toLowerCase());
     },
   },
   handphone: {

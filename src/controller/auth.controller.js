@@ -10,13 +10,13 @@ const {
 
 const login = async (req, res) => {
   try {
-    const { adminId, email, password } = req.body;
+    const { id, email, password } = req.body;
     const check = await passwordCheck(email, password);
 
     const secretKey = process.env.SECRET_PASSWORD;
 
     const payload = {
-      adminId: adminId,
+      id: id,
       email: email,
       password: password,
     };
@@ -32,6 +32,7 @@ const login = async (req, res) => {
     return isData;
   } catch (error) {
     handle500(req, res, error);
+    console.error(error);
   }
 };
 

@@ -6,7 +6,7 @@ const {
   editJabatan,
   deleteJabatan,
   getJabatanById,
-} = require("../../controller/pegawai/jabatan.controller");
+} = require("../controller/jabatan.controller");
 
 router.get("/pegawai/jabatan", getJabatan);
 router.get("/pegawai/jabatan/:jabatanId", getJabatanById);

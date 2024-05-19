@@ -26,7 +26,7 @@ const PelangganModels = db.define("pelanggan", {
       isEmail: true,
     },
     set(value) {
-      this.setDataValue("email", value.toLoweCase());
+      this.setDataValue("email", value.toLowerCase());
     },
   },
   handphone: {

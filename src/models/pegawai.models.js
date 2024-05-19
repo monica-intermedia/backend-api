@@ -31,7 +31,7 @@ const PegawaiModels = db.define("pegawai", {
       isEmail: true,
     },
     set(value) {
-      this.setDataValue("email", value.toLoweCase());
+      this.setDataValue("email", value.toLowerCase());
     },
   },
   handphone: {

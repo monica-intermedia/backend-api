@@ -1,5 +1,5 @@
-const db = require("../config/config");
 const { Sequelize, DataTypes } = require("sequelize");
+const db = require("../config/config");
 const { v4: uuidv4 } = require("uuid");
 
 const BarangModels = db.define("barang", {
@@ -7,7 +7,7 @@ const BarangModels = db.define("barang", {
     type: DataTypes.UUID,
     allowNull: false,
     primaryKey: true,
-    defaultValue: Sequelize.UUID,
+    defaultValue: uuidv4,
   },
   kodeBarang: {
     type: DataTypes.STRING(30),
@@ -28,7 +28,7 @@ const BarangModels = db.define("barang", {
 });
 
 BarangModels.beforeCreate((barang) => {
-  barang.id = `${uuidv4}`;
+  barang.id = uuidv4();
 });
 
 module.exports = BarangModels;
