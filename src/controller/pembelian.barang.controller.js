@@ -45,7 +45,7 @@ const createPembelian = async (req, res) => {
 
     // Validate input
     if (!id_supplier || !id_barang || !qty || !tanggal || !nomorFaktur) {
-      return handle400(req, res, "Missing required fields");
+      handle400(req, res, "Missing required fields");
     }
 
     // Fetch barang data
@@ -54,7 +54,7 @@ const createPembelian = async (req, res) => {
     });
 
     if (!barangData) {
-      return handle400(req, res, "Barang not found");
+      handle400(req, res, "Barang not found");
     }
 
     // Fetch supplier data to ensure it exists
@@ -63,7 +63,7 @@ const createPembelian = async (req, res) => {
     });
 
     if (!supplierData) {
-      return handle400(req, res, "Supplier not found");
+      handle400(req, res, "Supplier not found");
     }
 
     // Calculate totalHarga and update stock
@@ -104,7 +104,7 @@ const editPembelian = async (req, res) => {
     const updatePembelian = await PembelianBarangModels.findByPk(id);
 
     if (!updatePembelian) {
-      return handle400(req, res, " not found");
+      handle400(req, res, " not found");
     }
 
     await updatePembelian.update({
@@ -134,9 +134,9 @@ const deletePembelian = async (req, res) => {
 
     if (position) {
       await position.destroy();
-      return handle200(req, res, position, "delete");
+      handle200(req, res, position, "delete");
     } else {
-      return handle400(req, res, "not found");
+      handle400(req, res, "not found");
     }
   } catch (error) {
     handle500(req, res, error);
