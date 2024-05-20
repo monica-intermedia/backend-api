@@ -9,10 +9,6 @@ const BarangModels = db.define("barang", {
     primaryKey: true,
     defaultValue: uuidv4,
   },
-  kodeBarang: {
-    type: DataTypes.STRING(30),
-    allowNull: false,
-  },
   namaBarang: {
     type: DataTypes.STRING(50),
     allowNull: false,

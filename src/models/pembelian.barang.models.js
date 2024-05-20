@@ -12,7 +12,7 @@ const PembelianBarangModels = db.define("pembelianbarang", {
     primaryKey: true,
     defaultValue: Sequelize.UUIDV4,
   },
-  kodePembelian: {
+  nomorFaktur: {
     type: DataTypes.STRING(30),
     allowNull: false,
   },
@@ -24,13 +24,10 @@ const PembelianBarangModels = db.define("pembelianbarang", {
     type: DataTypes.BIGINT(15),
     allowNull: false,
   },
-  id_supplier: {
-    type: DataTypes.UUID,
+  isInventory: {
+    type: DataTypes.BOOLEAN,
     allowNull: false,
-    references: {
-      model: SupplierModels,
-      key: "id",
-    },
+    defaultValue: false,
   },
   id_supplier: {
     type: DataTypes.UUID,
@@ -50,14 +47,14 @@ const PembelianBarangModels = db.define("pembelianbarang", {
   },
 });
 
-PembelianBarang.beforeCreate((barang) => {
-  barang.id = `${uuidv4()}`;
+PembelianBarangModels.beforeCreate((barang) => {
+  barang.id = uuidv4();
 });
 
-SupplierModels.hasMany(PembelianBarang, { foreignKey: "id_supplier" });
-PembelianBarang.belongsTo(SupplierModels, { foreignKey: "id_supplier" });
+SupplierModels.hasMany(PembelianBarangModels, { foreignKey: "id_supplier" });
+PembelianBarangModels.belongsTo(SupplierModels, { foreignKey: "id_supplier" });
 
-BarangModels.hasMany(PembelianBarang, { foreignKey: "id_barang" });
-PembelianBarang.belongsTo(BarangModels, { foreignKey: "id_barang" });
+BarangModels.hasMany(PembelianBarangModels, { foreignKey: "id_barang" });
+PembelianBarangModels.belongsTo(BarangModels, { foreignKey: "id_barang" });
 
 module.exports = PembelianBarangModels;

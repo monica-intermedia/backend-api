@@ -42,6 +42,11 @@ const DataTransaksiModels = db.define("datatransaksi", {
     type: DataTypes.STRING(255),
     allowNull: true,
   },
+  isValid: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  },
   id_pelanggan: {
     type: DataTypes.UUID,
     allowNull: true,
