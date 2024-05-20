@@ -3,6 +3,7 @@ const app = express();
 const port = process.env.PORT || 8080;
 const cors = require("cors");
 require("dotenv").config();
+const startCronJobs = require("./middleware/startCronJobs.js");
 
 // Routing
 const adminRoute = require("./routes/admin.routes.js");
@@ -14,6 +15,7 @@ const supplierRoute = require("./routes/supplier.routes");
 const barangRoute = require("./routes/barang.routes.js");
 const gajiRoute = require("./routes/gaji.karyawan.routes.js");
 const pembelianbarangRoute = require("./routes/pembelian.barang.routes.js");
+// const laporanPengeluaran = require("./routes/laporan.pengeluaran.routes.js");
 
 // Migrate DB
 const db = require("./config/config");
@@ -29,6 +31,7 @@ db.sync({ force: false })
 
 app.use(cors());
 app.use(express.json());
+startCronJobs();
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -46,6 +49,7 @@ try {
   app.use(barangRoute);
   app.use(gajiRoute);
   app.use(pembelianbarangRoute);
+  // app.use(laporanPengeluaran);
 } catch (error) {
   console.error(error);
 }

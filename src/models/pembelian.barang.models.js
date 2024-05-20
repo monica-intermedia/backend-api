@@ -29,6 +29,10 @@ const PembelianBarangModels = db.define("pembelianbarang", {
     allowNull: false,
     defaultValue: false,
   },
+  tanggal: {
+    type: DataTypes.DATEONLY,
+    allowNull: false,
+  },
   id_supplier: {
     type: DataTypes.UUID,
     allowNull: false,

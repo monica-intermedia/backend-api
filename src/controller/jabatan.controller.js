@@ -71,16 +71,16 @@ const createJabatan = async (req, res) => {
 
 const editJabatan = async (req, res) => {
   try {
-    const { jabatanId } = req.params;
+    const { id } = req.params;
     const { jabatan } = req.body;
 
-    const updateJabatan = await JabatanModels.findByPk(jabatanId);
+    const updateJabatan = await JabatanModels.findByPk(id);
 
     if (!updateJabatan) {
       return handle400(req, res, "Position not found");
     }
 
-    await updateJabatan.update({ jabatan });
+    await updateJabatan.update({ jabatan: jabatan });
 
     return handle201(req, res, updateJabatan, "Success edit jabatan");
   } catch (error) {

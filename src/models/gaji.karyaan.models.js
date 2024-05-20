@@ -12,7 +12,7 @@ const GajiKaryawanModels = db.define("gajikaryawan", {
     defaultValue: Sequelize.UUIDV4,
   },
   tanggal: {
-    type: DataTypes.STRING(30),
+    type: DataTypes.DATEONLY,
     allowNull: false,
   },
   bpjs: {
