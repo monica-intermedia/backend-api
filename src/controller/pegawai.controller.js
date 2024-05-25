@@ -1,4 +1,5 @@
 const PegawaiModels = require("../models/pegawai.models");
+const JabatanModels = require("../models/jabatan.models");
 const bcrypt = require("bcrypt");
 const {
   handle200,
@@ -8,7 +9,12 @@ const {
 } = require("../utils/response");
 
 const getPegawai = async (req, res) => {
-  const data = await PegawaiModels.findAll();
+  const data = await PegawaiModels.findAll({
+    include: {
+      model: JabatanModels,
+      attributes: ["jabatan"],
+    },
+  });
 
   try {
     const isData = data

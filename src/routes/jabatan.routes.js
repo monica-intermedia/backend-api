@@ -9,9 +9,9 @@ const {
 } = require("../controller/jabatan.controller");
 
 router.get("/pegawai/jabatan", getJabatan);
-router.get("/pegawai/jabatan/:jabatanId", getJabatanById);
+router.get("/pegawai/jabatan/:id", getJabatanById);
 router.post("/pegawai/jabatan", createJabatan);
-router.put("/pegawai/jabatan/:jabatanId", editJabatan);
-router.delete("/pegawai/jabatan/:jabatanId", deleteJabatan);
+router.put("/pegawai/jabatan/:id", editJabatan);
+router.delete("/pegawai/jabatan/:id", deleteJabatan);
 
 module.exports = router;

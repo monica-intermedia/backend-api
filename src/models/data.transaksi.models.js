@@ -57,11 +57,11 @@ const DataTransaksiModels = db.define("datatransaksi", {
   },
 });
 
-CetakanDiProses.beforeCreate((barang) => {
+DataTransaksiModels.beforeCreate((barang) => {
   barang.id = `${uuidv4}`;
 });
 
-PelangganModels.hasMany(CetakanDiProses, { foreignKey: "id_pelanggan" });
-CetakanDiProses.belongsTo(PelangganModels, { foreignKey: "id_pelanggan" });
+PelangganModels.hasMany(DataTransaksiModels, { foreignKey: "id_pelanggan" });
+DataTransaksiModels.belongsTo(PelangganModels, { foreignKey: "id_pelanggan" });
 
 module.exports = DataTransaksiModels;

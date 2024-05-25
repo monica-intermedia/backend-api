@@ -26,7 +26,7 @@ const PembelianBarangModels = db.define("pembelianbarang", {
   },
   isInventory: {
     type: DataTypes.BOOLEAN,
-    allowNull: false,
+    allowNull: true,
     defaultValue: false,
   },
   tanggal: {

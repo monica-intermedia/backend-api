@@ -9,7 +9,18 @@ const {
 } = require("../utils/response");
 
 const getPembelian = async (req, res) => {
-  const data = await PembelianBarangModels.findAll();
+  const data = await PembelianBarangModels.findAll({
+    include: [
+      {
+        model: BarangModels,
+        attributes: ["namaBarang"],
+      },
+      {
+        model: SupplierModels,
+        attributes: ["name"],
+      },
+    ],
+  });
 
   try {
     const isData = data
@@ -40,13 +51,15 @@ const getPembelianById = async (req, res) => {
 
 const createPembelian = async (req, res) => {
   try {
-    const { id_supplier, id_barang, qty, tanggal, isInventory, nomorFaktur } =
-      req.body;
-
-    // Validate input
-    if (!id_supplier || !id_barang || !qty || !tanggal || !nomorFaktur) {
-      handle400(req, res, "Missing required fields");
-    }
+    const {
+      id_supplier,
+      id_barang,
+      qty,
+      totalHarga,
+      tanggal,
+      isInventory,
+      nomorFaktur,
+    } = req.body;
 
     // Fetch barang data
     const barangData = await BarangModels.findOne({
@@ -66,14 +79,10 @@ const createPembelian = async (req, res) => {
       handle400(req, res, "Supplier not found");
     }
 
-    // Calculate totalHarga and update stock
-    const totalHarga = qty * barangData.harga;
     const newStock = barangData.stok + qty;
 
-    // Update barang stock
     await BarangModels.update({ stok: newStock }, { where: { id: id_barang } });
 
-    // Create new PembelianBarang entry
     const data = await PembelianBarangModels.create({
       id_supplier: id_supplier,
       id_barang: id_barang,
@@ -89,6 +98,7 @@ const createPembelian = async (req, res) => {
     handle500(req, res, error);
   }
 };
+
 const editPembelian = async (req, res) => {
   try {
     const { id } = req.params;

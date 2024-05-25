@@ -21,7 +21,7 @@ const createDailyReport = async () => {
 };
 
 // Atur cron job untuk menjalankan setiap hari pada pukul 00:00
-cron.schedule("0 0 * * *", createDailyReport, {
+cron.schedule("0 0 * * *", createDailyReport, {  
   timezone: "Asia/Jakarta", // Sesuaikan dengan timezone Anda
 });
 

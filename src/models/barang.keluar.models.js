@@ -31,4 +31,4 @@ BarangKeluarModels.beforeCreate((barang) => {
 BarangModels.hasMany(BarangKeluarModels, { foreignKey: "id_barang" });
 BarangKeluarModels.belongsTo(BarangModels, { foreignKey: "id_barang" });
 
-module.exports = BarangModels;
+module.exports = BarangKeluarModels;

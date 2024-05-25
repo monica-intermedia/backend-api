@@ -15,7 +15,8 @@ const supplierRoute = require("./routes/supplier.routes");
 const barangRoute = require("./routes/barang.routes.js");
 const gajiRoute = require("./routes/gaji.karyawan.routes.js");
 const pembelianbarangRoute = require("./routes/pembelian.barang.routes.js");
-// const laporanPengeluaran = require("./routes/laporan.pengeluaran.routes.js");
+const dataTransaksiRoute = require("./routes/data.transaksi.routes.js");
+const barangKeluarRoute = require("./routes/barang.keluar.routes.js");
 
 // Migrate DB
 const db = require("./config/config");
@@ -32,7 +33,6 @@ db.sync({ force: false })
 app.use(cors());
 app.use(express.json());
 startCronJobs();
-
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -49,7 +49,8 @@ try {
   app.use(barangRoute);
   app.use(gajiRoute);
   app.use(pembelianbarangRoute);
-  // app.use(laporanPengeluaran);
+  app.use(dataTransaksiRoute);
+  app.use(barangKeluarRoute);
 } catch (error) {
   console.error(error);
 }

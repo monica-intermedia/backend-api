@@ -8,7 +8,12 @@ const {
 } = require("../utils/response");
 
 const getGaji = async (req, res) => {
-  const data = await GajiKaryawanModels.findAll();
+  const data = await GajiKaryawanModels.findAll({
+    include: {
+      model: PegawaiModels,
+      attributes: ["nip", "name", "gaji"],
+    },
+  });
 
   try {
     const isData = data

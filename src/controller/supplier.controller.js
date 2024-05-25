@@ -37,7 +37,7 @@ const getSupplierById = async (req, res) => {
 
 const createSupplier = async (req, res) => {
   try {
-    const { name, alamat, email, handphone, password, confPassword } = req.body;
+    const { name, alamat, email, handphone } = req.body;
 
     const existingUser = await SupplierModels.findAll({
       where: { email: email },
@@ -47,19 +47,11 @@ const createSupplier = async (req, res) => {
       return handle400(req, res, "email already available");
     }
 
-    if (!confPassword == password) {
-      console.log("password salah");
-      alert("password salah");
-    }
-
-    const encryptedPassword = await bcrypt.hash(password, 10);
-
     const data = await SupplierModels.create({
       name: name,
       alamat: alamat,
       email: email,
       handphone: handphone,
-      password: encryptedPassword,
     });
 
     return handle201(req, res, data, "Supplier");

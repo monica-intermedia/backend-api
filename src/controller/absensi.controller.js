@@ -1,4 +1,5 @@
-const JabatanModels = require("../models/jabatan.models");
+const AbsensiModels = require("../models/absensi.models");
+const PegawaiModels = require("../models/pegawai.models");
 const {
   handle200,
   handle201,
@@ -6,8 +7,8 @@ const {
   handle500,
 } = require("../utils/response");
 
-const getJabatan = async (req, res) => {
-  const data = await JabatanModels.findAll();
+const getAbsensi = async (req, res) => {
+  const data = await AbsensiModels.findAll();
 
   try {
     const isData = data
@@ -20,9 +21,9 @@ const getJabatan = async (req, res) => {
   }
 };
 
-const getJabatanById = async (req, res) => {
+const getAbensiById = async (req, res) => {
   const { id } = req.params;
-  const data = await JabatanModels.findOne({ where: { id: id } });
+  const data = await AbsensiModels.findOne({ where: { id: id } });
   try {
     const isData = data
       ? handle200(req, res, data, "all")
@@ -34,33 +35,26 @@ const getJabatanById = async (req, res) => {
   }
 };
 
-const getJabatanByName = async (req, res) => {
+const createAbsensi = async (req, res) => {
   try {
-    const { jabatan } = req.body;
-    const data = await JabatanModels.findAll({ where: { jabatan: jabatan } });
+    const {
+      id_pegawwai,
+      tanggal,
+      waktuMasuk,
+      waktuKeluar,
+      statusKehadiran,
+      gambar,
+      keterangan,
+    } = req.body;
 
-    const isData = data
-      ? handle200(req, res, data, "success get jabatan")
-      : handle400(req, res, "invalid parameters");
-
-    return isData;
-  } catch (error) {
-    handle500(req, res, error);
-  }
-};
-
-const createJabatan = async (req, res) => {
-  try {
-    const { jabatan } = req.body;
-
-    const check = await JabatanModels.findAll({ where: { jabatan: jabatan } });
-
-    if (check.length > 0) {
-      return handle400(req, res, "Position already available");
-    }
-
-    const data = await JabatanModels.create({
-      jabatan,
+    const data = await AbsensiModels.create({
+      id_pegawwai,
+      tanggal,
+      waktuMasuk,
+      waktuKeluar,
+      statusKehadiran,
+      gambar,
+      keterangan,
     });
 
     return handle201(req, res, data, "jabatan");
@@ -69,18 +63,34 @@ const createJabatan = async (req, res) => {
   }
 };
 
-const editJabatan = async (req, res) => {
+const editAbsensi = async (req, res) => {
   try {
     const { id } = req.params;
-    const { jabatan } = req.body;
+    const {
+      id_pegawwai,
+      tanggal,
+      waktuMasuk,
+      waktuKeluar,
+      statusKehadiran,
+      gambar,
+      keterangan,
+    } = req.body;
 
-    const updateJabatan = await JabatanModels.findByPk(id);
+    const updateJabatan = await AbsensiModels.findByPk(id);
 
     if (!updateJabatan) {
       return handle400(req, res, "Position not found");
     }
 
-    await updateJabatan.update({ jabatan: jabatan });
+    await updateJabatan.update({
+      id_pegawwai,
+      tanggal,
+      waktuMasuk,
+      waktuKeluar,
+      statusKehadiran,
+      gambar,
+      keterangan,
+    });
 
     return handle201(req, res, updateJabatan, "Success edit jabatan");
   } catch (error) {
@@ -88,7 +98,7 @@ const editJabatan = async (req, res) => {
   }
 };
 
-const deleteJabatan = async (req, res) => {
+const deleteAbsensi = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -110,10 +120,9 @@ const deleteJabatan = async (req, res) => {
 };
 
 module.exports = {
-  getJabatan,
-  createJabatan,
-  editJabatan,
-  deleteJabatan,
-  getJabatanByName,
-  getJabatanById,
+  getAbsensi,
+  createAbsensi,
+  editAbsensi,
+  deleteAbsensi,
+  getAbensiById,
 };
