@@ -55,8 +55,10 @@ const getTransaksiByName = async (req, res) => {
 const createTransaksi = async (req, res) => {
   try {
     const {
-      id_pelanggan,
+      // id_pelanggan,
       noTransaksi,
+      namaKoran,
+      keterangan,
       eksemplar,
       jumlahHalaman,
       jumlahWarna,
@@ -67,7 +69,9 @@ const createTransaksi = async (req, res) => {
     } = req.body;
 
     const data = await DataTransaksiModels.create({
-      id_pelanggan: id_pelanggan,
+      // id_pelanggan: id_pelanggan,
+      namaKoran: namaKoran,
+      keterangan: keterangan,
       noTransaksi: noTransaksi,
       eksemplar: eksemplar,
       jumlahHalaman: jumlahHalaman,
@@ -88,7 +92,9 @@ const editTransaksi = async (req, res) => {
   try {
     const { id } = req.params;
     const {
-      id_pelanggan,
+      // id_pelanggan,
+      namaKoran,
+      keterangan,
       noTransaksi,
       eksemplar,
       jumlahHalaman,
@@ -106,7 +112,9 @@ const editTransaksi = async (req, res) => {
     }
 
     await updateTransaksi.update({
-      id_pelanggan: id_pelanggan,
+      // id_pelanggan: id_pelanggan,
+      namaKoran: namaKoran,
+      keterangan: keterangan,
       noTransaksi: noTransaksi,
       eksemplar: eksemplar,
       jumlahHalaman: jumlahHalaman,

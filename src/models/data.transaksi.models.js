@@ -1,7 +1,7 @@
 const db = require("../config/config");
 const { Sequelize, DataTypes } = require("sequelize");
 const { v4: uuidv4 } = require("uuid");
-const PelangganModels = require("../models/pelanggan.models");
+// const PelangganModels = require("../models/pelanggan.models");
 
 const DataTransaksiModels = db.define("datatransaksi", {
   id: {
@@ -9,6 +9,14 @@ const DataTransaksiModels = db.define("datatransaksi", {
     allowNull: false,
     primaryKey: true,
     defaultValue: Sequelize.UUID,
+  },
+  namaKoran: {
+    type: DataTypes.STRING(100),
+    allowNull: false,
+  },
+  keterangan: {
+    type: DataTypes.STRING(255),
+    allowNull: true,
   },
   eksemplar: {
     type: DataTypes.INTEGER(10),
@@ -47,21 +55,21 @@ const DataTransaksiModels = db.define("datatransaksi", {
     allowNull: false,
     defaultValue: false,
   },
-  id_pelanggan: {
-    type: DataTypes.UUID,
-    allowNull: true,
-    references: {
-      model: PelangganModels,
-      allowNull: false,
-    },
-  },
+  // id_pelanggan: {
+  //   type: DataTypes.UUID,
+  //   allowNull: true,
+  //   references: {
+  //     model: PelangganModels,
+  //     allowNull: false,
+  //   },
+  // },
 });
 
 DataTransaksiModels.beforeCreate((barang) => {
   barang.id = `${uuidv4}`;
 });
 
-PelangganModels.hasMany(DataTransaksiModels, { foreignKey: "id_pelanggan" });
-DataTransaksiModels.belongsTo(PelangganModels, { foreignKey: "id_pelanggan" });
+// PelangganModels.hasMany(DataTransaksiModels, { foreignKey: "id_pelanggan" });
+// DataTransaksiModels.belongsTo(PelangganModels, { foreignKey: "id_pelanggan" });
 
 module.exports = DataTransaksiModels;
