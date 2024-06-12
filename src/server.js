@@ -26,8 +26,10 @@ const pembelianbarangRoute = require("./routes/pembelian.barang.routes.js");
 const dataTransaksiRoute = require("./routes/data.transaksi.routes.js");
 const barangKeluarRoute = require("./routes/barang.keluar.routes.js");
 const pembelianlainyaRoute = require("./routes/pembelian.lainya.routes.js");
+const penjualanlainyaRoute = require("./routes/penjualan.lainya.routes.js");
+const absensiRoute = require("./routes/absensi.routes.js");
 
-// Migrate DB
+// // Migrate DB
 // const db = require("./config/config");
 
 // // Jangan gunakan force: true dalam produksi, ini hanya untuk pengembangan
@@ -39,10 +41,10 @@ const pembelianlainyaRoute = require("./routes/pembelian.lainya.routes.js");
 //     console.error("Failed to sync database:", err);
 //   });
 
-wsServer.on("connection", (socket) => {
-  socket.on("message", (message) => console.log(message));
-  socket.on("close", () => console.log("Client disconnected"));
-});
+// wsServer.on("connection", (socket) => {
+//   socket.on("message", (message) => console.log(message));
+//   socket.on("close", () => console.log("Client disconnected"));
+// });
 
 app.use(cors());
 app.use(express.json());
@@ -66,6 +68,8 @@ try {
   app.use(dataTransaksiRoute);
   app.use(barangKeluarRoute);
   app.use(pembelianlainyaRoute);
+  app.use(penjualanlainyaRoute);
+  app.use(absensiRoute);
 } catch (error) {
   console.error(error);
 }

@@ -8,7 +8,21 @@ const {
 } = require("../utils/response");
 
 const getTransaksi = async (req, res) => {
-  const data = await DataTransaksiModels.findAll();
+  const data = await DataTransaksiModels.findAll({ where: { isValid: false } });
+
+  try {
+    const isData = data
+      ? handle200(req, res, data, "all")
+      : handle400(req, res, "invalid paramaters");
+
+    return isData;
+  } catch (error) {
+    handle500(req, res, error);
+  }
+};
+
+const getDataTransaksi = async (req, res) => {
+  const data = await DataTransaksiModels.findAll({ where: { isValid: true } });
 
   try {
     const isData = data
@@ -64,6 +78,8 @@ const createTransaksi = async (req, res) => {
       jumlahWarna,
       harga,
       totalHarga,
+      tanggal,
+      status,
       jumlahPlate,
       isValid,
     } = req.body;
@@ -77,8 +93,10 @@ const createTransaksi = async (req, res) => {
       jumlahHalaman: jumlahHalaman,
       jumlahWarna: jumlahWarna,
       harga: harga,
+      tanggal: tanggal,
       totalHarga: totalHarga,
       jumlahPlate: jumlahPlate,
+      status: status,
       isValid: isValid,
     });
 
@@ -100,8 +118,10 @@ const editTransaksi = async (req, res) => {
       jumlahHalaman,
       jumlahWarna,
       harga,
+      tanggal,
       totalHarga,
       jumlahPlate,
+      status,
       isValid,
     } = req.body;
 
@@ -120,8 +140,10 @@ const editTransaksi = async (req, res) => {
       jumlahHalaman: jumlahHalaman,
       jumlahWarna: jumlahWarna,
       harga: harga,
+      tanggal: tanggal,
       totalHarga: totalHarga,
       jumlahPlate: jumlahPlate,
+      status: status,
       isValid: isValid,
     });
 
@@ -153,10 +175,11 @@ const deleteTransaksi = async (req, res) => {
 };
 
 module.exports = {
-  getTransaksi,
+  getDataTransaksi,
   createTransaksi,
   editTransaksi,
   deleteTransaksi,
   getTransaksiByName,
   getTransaksiById,
+  getTransaksi,
 };

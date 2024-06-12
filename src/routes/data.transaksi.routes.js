@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const {
   getTransaksi,
+  getDataTransaksi,
   getTransaksiById,
   createTransaksi,
   editTransaksi,
@@ -9,6 +10,7 @@ const {
 } = require("../controller/data.transaksi.controller");
 
 router.get("/penjualan/transaksi", getTransaksi);
+router.get("/penjualan/datatransaksi", getDataTransaksi);
 router.get("/penjualan/transaksi/:id", getTransaksiById);
 router.post("/penjualan/transaksi", createTransaksi);
 router.put("/penjualan/transaksi/:id", editTransaksi);

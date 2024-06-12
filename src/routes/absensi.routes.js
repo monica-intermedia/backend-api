@@ -8,10 +8,10 @@ const {
   getAbensiById,
 } = require("../controller/absensi.controller");
 
-router.get("/penjualan/barangkeluar", getAbsensi);
-router.get("/penjualan/barangkeluar/:id", getAbensiById);
-router.post("/penjualan/barangkeluar", createAbsensi);
-router.put("/penjualan/barangkeluar/:id", editAbsensi);
-router.delete("/penjualan/barangkeluar/:id", deleteAbsensi);
+router.get("/pegawai/absensi", getAbsensi);
+router.get("/pegawai/absensi/:id", getAbensiById);
+router.post("/pegawai/absensi", createAbsensi);
+router.put("/pegawai/absensi/:id", editAbsensi);
+router.delete("/pegawai/absensi/:id", deleteAbsensi);
 
 module.exports = router;

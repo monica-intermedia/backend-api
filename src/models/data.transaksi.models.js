@@ -8,7 +8,7 @@ const DataTransaksiModels = db.define("datatransaksi", {
     type: DataTypes.UUID,
     allowNull: false,
     primaryKey: true,
-    defaultValue: Sequelize.UUID,
+    defaultValue: DataTypes.UUIDV4,
   },
   namaKoran: {
     type: DataTypes.STRING(100),
@@ -42,12 +42,12 @@ const DataTransaksiModels = db.define("datatransaksi", {
     type: DataTypes.BIGINT(20),
     allowNull: false,
   },
+  tanggal: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  },
   status: {
     type: DataTypes.ENUM(["sudah-dicetak", "belum-dicetak"]),
-    allowNull: true,
-  },
-  file: {
-    type: DataTypes.STRING(255),
     allowNull: true,
   },
   isValid: {

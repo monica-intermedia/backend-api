@@ -26,6 +26,10 @@ const PenjualanLainyaModels = db.define("penjualanlainya", {
     type: DataTypes.STRING(255),
     allowNull: true,
   },
+  tanggal: {
+    type: DataTypes.DATEONLY,
+    allowNull: false,
+  },
 });
 
 PenjualanLainyaModels.beforeCreate((jabatan) => {
