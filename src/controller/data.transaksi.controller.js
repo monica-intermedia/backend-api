@@ -1,5 +1,5 @@
 const DataTransaksiModels = require("../models/data.transaksi.models");
-const { Op } = require("sequelize");
+const { Op, fn, col } = require("sequelize");
 const {
   handle200,
   handle201,
@@ -21,6 +21,29 @@ const getTransaksi = async (req, res) => {
   }
 };
 
+const getTransaksiByDate = async (req, res) => {
+  try {
+    // Query to find all transactions and group by date
+    const data = await DataTransaksiModels.findAll({
+      attributes: [
+        [fn("DATE", col("tanggal")), "date"],
+        [fn("COUNT", col("id")), "transactionCount"],
+        [fn("SUM", col("totalHarga")), "totalAmount"],
+      ],
+      group: [fn("DATE", col("tanggal"))],
+      order: [[fn("DATE", col("tanggal")), "ASC"]],
+    });
+
+    // Send response with aggregated data
+    if (data && data.length > 0) {
+      return handle200(req, res, data, "transactions by date");
+    } else {
+      return handle400(req, res, "No transactions found");
+    }
+  } catch (error) {
+    handle500(req, res, error);
+  }
+};
 const getDataTransaksi = async (req, res) => {
   const data = await DataTransaksiModels.findAll({ where: { isValid: true } });
 
@@ -182,4 +205,5 @@ module.exports = {
   getTransaksiByName,
   getTransaksiById,
   getTransaksi,
+  getTransaksiByDate,
 };

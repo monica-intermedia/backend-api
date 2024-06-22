@@ -29,17 +29,17 @@ const pembelianlainyaRoute = require("./routes/pembelian.lainya.routes.js");
 const penjualanlainyaRoute = require("./routes/penjualan.lainya.routes.js");
 const absensiRoute = require("./routes/absensi.routes.js");
 
-// // Migrate DB
-// const db = require("./config/config");
+// Migrate DB
+const db = require("./config/config");
 
-// // Jangan gunakan force: true dalam produksi, ini hanya untuk pengembangan
-// db.sync({ force: false })
-//   .then(() => {
-//     console.log("Database synced");
-//   })
-//   .catch((err) => {
-//     console.error("Failed to sync database:", err);
-//   });
+// Jangan gunakan force: true dalam produksi, ini hanya untuk pengembangan
+db.sync({ force: false })
+  .then(() => {
+    console.log("Database synced");
+  })
+  .catch((err) => {
+    console.error("Failed to sync database:", err);
+  });
 
 // wsServer.on("connection", (socket) => {
 //   socket.on("message", (message) => console.log(message));

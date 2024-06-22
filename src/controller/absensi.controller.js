@@ -8,7 +8,12 @@ const {
 } = require("../utils/response");
 
 const getAbsensi = async (req, res) => {
-  const data = await AbsensiModels.findAll();
+  const data = await AbsensiModels.findAll({
+    include: {
+      model: PegawaiModels,
+      attributes: ["name"],
+    },
+  });
 
   try {
     const isData = data
