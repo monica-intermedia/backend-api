@@ -36,13 +36,12 @@ const handle401 = (req, res, message) => {
   });
 };
 
-const handle500 = (req, res, message) => {
+const handle500 = (req, res, error) => {
+  console.error(error);
   res.status(500).json({
-    error: {
-      message: message || "sever error",
-    },
+    message: "Internal Server Error",
+    error: error.message,
   });
-  console.error(message);
 };
 
 module.exports = { handle200, handle201, handle400, handle401, handle500 };

@@ -6,7 +6,6 @@ const cors = require("cors");
 require("dotenv").config();
 const startCronJobs = require("./middleware/startCronJobs.js");
 const WebSocket = require("ws");
-
 // Create HTTP server
 const server = http.createServer(app);
 
@@ -28,6 +27,7 @@ const barangKeluarRoute = require("./routes/barang.keluar.routes.js");
 const pembelianlainyaRoute = require("./routes/pembelian.lainya.routes.js");
 const penjualanlainyaRoute = require("./routes/penjualan.lainya.routes.js");
 const absensiRoute = require("./routes/absensi.routes.js");
+const chartRoute = require("./routes/chart.routes.js");
 
 // Migrate DB
 const db = require("./config/config");
@@ -70,6 +70,7 @@ try {
   app.use(pembelianlainyaRoute);
   app.use(penjualanlainyaRoute);
   app.use(absensiRoute);
+  app.use(chartRoute);
 } catch (error) {
   console.error(error);
 }

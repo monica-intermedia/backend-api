@@ -46,7 +46,7 @@ const getGajiById = async (req, res) => {
 
 const createGaji = async (req, res) => {
   try {
-    const { tanggal, bpjs, potongan, bonus, id_pegawai } = req.body;
+    const { tanggal, bpjs, potongan, bonus, id_pegawai, jumlahGaji } = req.body;
 
     const pegawaiData = await PegawaiModels.findOne({
       where: { id: id_pegawai },
@@ -55,9 +55,6 @@ const createGaji = async (req, res) => {
     if (!pegawaiData) {
       return handle400(req, res, "Pegawai not found");
     }
-
-    const gaji = pegawaiData.gaji;
-    const jumlahGaji = gaji - potongan - bpjs + bonus;
 
     const data = await GajiKaryawanModels.create({
       tanggal: tanggal,
