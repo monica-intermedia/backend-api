@@ -50,7 +50,7 @@ const DataTransaksiModels = db.define("datatransaksi", {
     allowNull: false,
   },
   status: {
-    type: DataTypes.ENUM(["sudah-dicetak", "belum-dicetak"]),
+    type: DataTypes.STRING,
     allowNull: true,
   },
   isValid: {

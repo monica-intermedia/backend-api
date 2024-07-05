@@ -7,6 +7,7 @@ const {
   handle500,
 } = require("../utils/response");
 const DataTransaksiModels = require("../models/data.transaksi.models");
+const coreApi = require("../middleware/midtrans");
 
 let snap = new midtransClient.Snap({
   isProduction: false,
@@ -104,7 +105,6 @@ const createTransaksi = async (req, res) => {
       grossamount,
       jumlahPlate,
       phone,
-      status,
       isValid,
     } = req.body;
 
@@ -116,24 +116,24 @@ const createTransaksi = async (req, res) => {
         gross_amount: grossamount,
       },
       customer_details: {
-        email,
-        phone,
+        email: email,
+        phone: phone,
       },
       item_details: [
         {
+          id: order_id,
           price: harga,
           quantity: eksemplar,
           name: namaKoran,
-          keterangan,
-          jumlahHalaman,
-          jumlahWarna,
-          tanggal,
-          status,
-          jumlahPlate,
-          isValid,
+          category: keterangan,
         },
       ],
+      credit_card: {
+        secure: true,
+      },
     };
+
+    console.log(transactionDetails);
 
     await DataTransaksiModels.create({
       order_id: transactionDetails.transaction_details.order_id,
@@ -145,7 +145,7 @@ const createTransaksi = async (req, res) => {
       jumlahWarna,
       harga,
       tanggal,
-      status,
+      status: "pending",
       jumlahPlate,
       isValid,
       email,
@@ -153,8 +153,63 @@ const createTransaksi = async (req, res) => {
     });
 
     const transaction = await snap.createTransaction(transactionDetails);
+
     res.status(201).json(transaction);
-    console.log(transaction);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
+const notification = async (req, res) => {
+  try {
+    const notification = req.body;
+
+    let statusResponse = await coreApi.transaction.notification(notification);
+
+    let orderId = statusResponse.order_id;
+    let status = statusResponse.transaction_status;
+    let fraudStatus = statusResponse.fraud_status;
+
+    if (status == "capture") {
+      if (fraudStatus == "accept") {
+        await DataTransaksiModels.update(
+          { status: "success" },
+          { where: { order_id: orderId } }
+        );
+      } else if (fraudStatus == "challenge") {
+        await DataTransaksiModels.update(
+          { status: "challenge" },
+          { where: { order_id: orderId } }
+        );
+      } else {
+        await DataTransaksiModels.update(
+          { status: "fraud" },
+          { where: { order_id: orderId } }
+        );
+      }
+    } else if (status == "settlement") {
+      await DataTransaksiModels.update(
+        { status: "settlement" },
+        { where: { order_id: orderId } }
+      );
+    } else if (status == "deny") {
+      await DataTransaksiModels.update(
+        { status: "deny" },
+        { where: { order_id: orderId } }
+      );
+    } else if (status == "cancel" || status == "expire") {
+      await DataTransaksiModels.update(
+        { status: "cancelled" },
+        { where: { order_id: orderId } }
+      );
+    } else if (status == "pending") {
+      await DataTransaksiModels.update(
+        { status: "pending" },
+        { where: { order_id: orderId } }
+      );
+    }
+
+    res.status(200).json({ message: "Notification processed" });
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -233,4 +288,5 @@ module.exports = {
   getTransaksiById,
   getTransaksi,
   getTransaksiByEmail,
+  notification,
 };

@@ -33,13 +33,13 @@ const chartRoute = require("./routes/chart.routes.js");
 const db = require("./config/config");
 
 // Jangan gunakan force: true dalam produksi, ini hanya untuk pengembangan
-db.sync({ force: false })
-  .then(() => {
-    console.log("Database synced");
-  })
-  .catch((err) => {
-    console.error("Failed to sync database:", err);
-  });
+// db.sync({ force: false })
+//   .then(() => {
+//     console.log("Database synced");
+//   })
+//   .catch((err) => {
+//     console.error("Failed to sync database:", err);
+//   });
 
 // wsServer.on("connection", (socket) => {
 //   socket.on("message", (message) => console.log(message));
