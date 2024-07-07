@@ -1,5 +1,6 @@
 const midtransClient = require("midtrans-client");
 const { nanoid } = require("nanoid");
+const jwt = require("jsonwebtoken");
 const {
   handle200,
   handle201,
@@ -7,11 +8,17 @@ const {
   handle500,
 } = require("../utils/response");
 const DataTransaksiModels = require("../models/data.transaksi.models");
-const coreApi = require("../middleware/midtrans");
+const KoranModels = require("../models/koran.models");
 
 let snap = new midtransClient.Snap({
   isProduction: false,
   serverKey: process.env.SERVER_KEY,
+});
+
+const coreApi = new midtransClient.CoreApi({
+  isProduction: false,
+  serverKey: process.env.SERVER_KEY,
+  clientKey: process.env.CLIENT_KEY,
 });
 
 const getTransaksi = async (req, res) => {
@@ -93,27 +100,26 @@ const getTransaksiByEmail = async (req, res) => {
 
 const createTransaksi = async (req, res) => {
   try {
-    const {
-      namaKoran,
-      keterangan,
-      email,
-      eksemplar,
-      jumlahHalaman,
-      jumlahWarna,
-      harga,
-      tanggal,
-      grossamount,
-      jumlahPlate,
-      phone,
-      isValid,
-    } = req.body;
+    const { namaKoran, email, eksemplar, phone, isValid, id_koran } = req.body;
 
     const order_id = `TRX-${nanoid(4)}-${nanoid(8)}`;
+
+    const koranData = await KoranModels.findOne({
+      where: {
+        id: id_koran,
+      },
+    });
+
+    if (!koranData) {
+      handle400(req, res, "koran not found");
+    }
+
+    const gross_amount = koranData.harga * eksemplar;
 
     const transactionDetails = {
       transaction_details: {
         order_id: order_id,
-        gross_amount: grossamount,
+        gross_amount: gross_amount,
       },
       customer_details: {
         email: email,
@@ -122,10 +128,9 @@ const createTransaksi = async (req, res) => {
       item_details: [
         {
           id: order_id,
-          price: harga,
+          price: koranData.harga,
           quantity: eksemplar,
           name: namaKoran,
-          category: keterangan,
         },
       ],
       credit_card: {
@@ -133,86 +138,98 @@ const createTransaksi = async (req, res) => {
       },
     };
 
-    console.log(transactionDetails);
+    const date = new Date();
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, 0);
+    const year = date.getFullYear().toString().slice(-2);
+    const formattedDate = `${day}-${month}-${year}`;
+    const splitDate = formattedDate.split(" ")[0];
 
+    // Buat transaksi di Midtrans
+    const transaction = await snap.createTransaction(transactionDetails);
+
+    // Simpan transaksi di database
     await DataTransaksiModels.create({
       order_id: transactionDetails.transaction_details.order_id,
       gross_amount: transactionDetails.transaction_details.gross_amount,
       namaKoran,
-      keterangan,
       eksemplar,
-      jumlahHalaman,
-      jumlahWarna,
-      harga,
-      tanggal,
+      tanggal: splitDate,
       status: "pending",
-      jumlahPlate,
       isValid,
       email,
       phone,
+      id_koran,
     });
 
-    const transaction = await snap.createTransaction(transactionDetails);
+    const tokenaccess = jwt.sign({ order_id }, process.env.TRANSACTION_TOKEN);
 
-    res.status(201).json(transaction);
+    res.status(201).json({ order_id, transaction, tokenaccess });
   } catch (error) {
+    console.error("Error creating transaction:", error.message);
     res.status(500).send(error.message);
   }
 };
 
-const notification = async (req, res) => {
+const successPayment = async (req, res) => {
   try {
-    const notification = req.body;
+    const { order_id } = req.body;
 
-    let statusResponse = await coreApi.transaction.notification(notification);
-
-    let orderId = statusResponse.order_id;
-    let status = statusResponse.transaction_status;
-    let fraudStatus = statusResponse.fraud_status;
-
-    if (status == "capture") {
-      if (fraudStatus == "accept") {
-        await DataTransaksiModels.update(
-          { status: "success" },
-          { where: { order_id: orderId } }
-        );
-      } else if (fraudStatus == "challenge") {
-        await DataTransaksiModels.update(
-          { status: "challenge" },
-          { where: { order_id: orderId } }
-        );
-      } else {
-        await DataTransaksiModels.update(
-          { status: "fraud" },
-          { where: { order_id: orderId } }
-        );
-      }
-    } else if (status == "settlement") {
-      await DataTransaksiModels.update(
-        { status: "settlement" },
-        { where: { order_id: orderId } }
-      );
-    } else if (status == "deny") {
-      await DataTransaksiModels.update(
-        { status: "deny" },
-        { where: { order_id: orderId } }
-      );
-    } else if (status == "cancel" || status == "expire") {
-      await DataTransaksiModels.update(
-        { status: "cancelled" },
-        { where: { order_id: orderId } }
-      );
-    } else if (status == "pending") {
-      await DataTransaksiModels.update(
-        { status: "pending" },
-        { where: { order_id: orderId } }
-      );
+    if (!order_id) {
+      return handle400(req, res, "order_id is required");
     }
 
-    res.status(200).json({ message: "Notification processed" });
+    console.log("Received order_id:", order_id);
+
+    const updatePayment = await DataTransaksiModels.findOne({
+      where: { order_id },
+    });
+
+    if (!updatePayment) {
+      return handle400(req, res, "Transaksi not found");
+    }
+
+    const data = await DataTransaksiModels.update(
+      { status: "success" },
+      { where: { order_id } }
+    );
+
+    return res.status(201).json({
+      data: data,
+    });
   } catch (error) {
-    res.status(500).send(error.message);
+    console.error("Error:", error);
+
+    if (error.response) {
+      return handle500(req, res, error.response);
+    } else {
+      return handle500(req, res, error.message || "Internal Server Error");
+    }
   }
+
+  // Fetch transaction status from Midtrans
+  // const order_id = req.order_id;
+
+  // console.log(order_id);
+
+  // try {
+  //   // Fetch transaction status from Midtrans
+  //   const transactionStatus = await coreApi.transaction.status(order_id);
+
+  //   // Update the status in your database
+  //   await DataTransaksiModels.update(
+  //     { status: transactionStatus.transaction_status },
+  //     { where: { order_id } }
+  //   );
+
+  //   res.status(200).json({
+  //     message: "Transaction status updated successfully",
+  //     status: transactionStatus.transaction_status,
+  //   });
+  // } catch (error) {
+  //   console.error("Error checking transaction status:", error.message);
+  //   res.status(500).json({ message: "Internal Server Error" });
+  // }
 };
 
 const editTransaksi = async (req, res) => {
@@ -288,5 +305,5 @@ module.exports = {
   getTransaksiById,
   getTransaksi,
   getTransaksiByEmail,
-  notification,
+  successPayment,
 };

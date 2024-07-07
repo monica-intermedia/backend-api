@@ -1,5 +1,6 @@
-const db = require("../config/config");
 const { Sequelize, DataTypes } = require("sequelize");
+const db = require("../config/config");
+const KoranModels = require("./koran.models");
 
 const DataTransaksiModels = db.define("datatransaksi", {
   id: {
@@ -9,7 +10,6 @@ const DataTransaksiModels = db.define("datatransaksi", {
     defaultValue: DataTypes.UUIDV4,
   },
   order_id: {
-    // Make sure this matches with the payload property
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -17,28 +17,8 @@ const DataTransaksiModels = db.define("datatransaksi", {
     type: DataTypes.STRING(100),
     allowNull: false,
   },
-  keterangan: {
-    type: DataTypes.STRING(255),
-    allowNull: true,
-  },
   eksemplar: {
     type: DataTypes.INTEGER(10),
-    allowNull: false,
-  },
-  jumlahHalaman: {
-    type: DataTypes.INTEGER(10),
-    allowNull: false,
-  },
-  jumlahWarna: {
-    type: DataTypes.INTEGER(10),
-    allowNull: false,
-  },
-  jumlahPlate: {
-    type: DataTypes.INTEGER(10),
-    allowNull: false,
-  },
-  harga: {
-    type: DataTypes.BIGINT(20),
     allowNull: false,
   },
   gross_amount: {
@@ -64,6 +44,17 @@ const DataTransaksiModels = db.define("datatransaksi", {
   phone: {
     type: DataTypes.STRING,
   },
+  id_koran: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    references: {
+      model: KoranModels,
+      key: "id",
+    },
+  },
 });
+
+KoranModels.hasMany(DataTransaksiModels, { foreignKey: "id_koran" });
+DataTransaksiModels.belongsTo(KoranModels, { foreignKey: "id_koran" });
 
 module.exports = DataTransaksiModels;

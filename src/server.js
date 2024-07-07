@@ -6,6 +6,7 @@ const cors = require("cors");
 require("dotenv").config();
 const startCronJobs = require("./middleware/startCronJobs.js");
 const WebSocket = require("ws");
+
 // Create HTTP server
 const server = http.createServer(app);
 
@@ -32,8 +33,8 @@ const chartRoute = require("./routes/chart.routes.js");
 // Migrate DB
 const db = require("./config/config");
 
-// Jangan gunakan force: true dalam produksi, ini hanya untuk pengembangan
-// db.sync({ force: false })
+// // Jangan gunakan force: true dalam produksi, ini hanya untuk pengembangan
+// db.sync({ alter: true })
 //   .then(() => {
 //     console.log("Database synced");
 //   })
@@ -48,7 +49,7 @@ const db = require("./config/config");
 
 app.use(cors());
 app.use(express.json());
-startCronJobs();
+// startCronJobs();
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);

@@ -39,8 +39,7 @@ const getBarangKeluarById = async (req, res) => {
 
 const createBarangKeluar = async (req, res) => {
   try {
-    const { id_supplier, id_barang, qty, tanggal, isInventory, nomorFaktur } =
-      req.body;
+    const { id_supplier, id_barang, qty, tanggal, nomorFaktur } = req.body;
 
     // Validate input
     if (!id_supplier || !id_barang || !qty || !tanggal || !nomorFaktur) {
