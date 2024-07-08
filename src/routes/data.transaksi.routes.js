@@ -10,10 +10,12 @@ const {
   deleteTransaksi,
   getTransaksiByEmail,
   successPayment,
+  getTransaksiByStatus,
 } = require("../controller/data.transaksi.controller");
 
 router.get("/penjualan/transaksi", getTransaksi);
 router.get("/penjualan/datatransaksi", getDataTransaksi);
+router.get("/penjualan/transaksistatus", getTransaksiByStatus);
 router.get("/penjualan/datatransaksi/email", getTransaksiByEmail);
 router.get("/penjualan/transaksi/:id", getTransaksiById);
 router.post("/penjualan/transaksi", createTransaksi);

@@ -29,6 +29,7 @@ const pembelianlainyaRoute = require("./routes/pembelian.lainya.routes.js");
 const penjualanlainyaRoute = require("./routes/penjualan.lainya.routes.js");
 const absensiRoute = require("./routes/absensi.routes.js");
 const chartRoute = require("./routes/chart.routes.js");
+const koranRoute = require("./routes/koran.routes.js");
 
 // Migrate DB
 const db = require("./config/config");
@@ -72,6 +73,7 @@ try {
   app.use(penjualanlainyaRoute);
   app.use(absensiRoute);
   app.use(chartRoute);
+  app.use(koranRoute);
 } catch (error) {
   console.error(error);
 }

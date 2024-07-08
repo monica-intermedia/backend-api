@@ -33,6 +33,11 @@ const DataTransaksiModels = db.define("datatransaksi", {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  statusCetak: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: "belum-dicetak",
+  },
   isValid: {
     type: DataTypes.BOOLEAN,
     allowNull: false,

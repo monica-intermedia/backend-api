@@ -15,16 +15,31 @@ let snap = new midtransClient.Snap({
   serverKey: process.env.SERVER_KEY,
 });
 
-const coreApi = new midtransClient.CoreApi({
-  isProduction: false,
-  serverKey: process.env.SERVER_KEY,
-  clientKey: process.env.CLIENT_KEY,
-});
-
 const getTransaksi = async (req, res) => {
   try {
     const data = await DataTransaksiModels.findAll({
-      where: { isValid: false },
+      where: { status: "success", statusCetak: "sudah-dicetak" },
+      include: {
+        model: KoranModels,
+        attributes: ["halaman", "warna", "plate", "harga"],
+      },
+    });
+    return data
+      ? handle200(req, res, data, "all")
+      : handle400(req, res, "invalid parameters");
+  } catch (error) {
+    handle500(req, res, error);
+  }
+};
+
+const getTransaksiByStatus = async (req, res) => {
+  try {
+    const data = await DataTransaksiModels.findAll({
+      where: { status: "success", statusCetak: "belum-dicetak" },
+      include: {
+        model: KoranModels,
+        attributes: ["halaman", "warna", "plate", "harga"],
+      },
     });
     return data
       ? handle200(req, res, data, "all")
@@ -50,7 +65,13 @@ const getDataTransaksi = async (req, res) => {
 const getTransaksiById = async (req, res) => {
   const { id } = req.params;
   try {
-    const data = await DataTransaksiModels.findOne({ where: { id: id } });
+    const data = await DataTransaksiModels.findOne({
+      where: { id: id },
+      include: {
+        model: KoranModels,
+        attributes: ["halaman", "warna", "harga"],
+      },
+    });
     return data
       ? handle200(req, res, data, "all")
       : handle400(req, res, "invalid parameters");
@@ -82,7 +103,16 @@ const getTransaksiByEmail = async (req, res) => {
       return handle400(req, res, "Email parameter is missing");
     }
 
-    const data = await DataTransaksiModels.findAll({ where: { email: email } });
+    const data = await DataTransaksiModels.findAll({
+      where: {
+        email: email,
+        status: "success",
+      },
+      include: {
+        model: KoranModels,
+        attributes: ["keterangan", "halaman", "warna", "harga"],
+      },
+    });
 
     if (data && data.length > 0) {
       return handle200(req, res, data, "Success get transactions by email");
@@ -105,13 +135,11 @@ const createTransaksi = async (req, res) => {
     const order_id = `TRX-${nanoid(4)}-${nanoid(8)}`;
 
     const koranData = await KoranModels.findOne({
-      where: {
-        id: id_koran,
-      },
+      where: { id: id_koran },
     });
 
     if (!koranData) {
-      handle400(req, res, "koran not found");
+      return res.status(400).json({ message: "Koran not found" });
     }
 
     const gross_amount = koranData.harga * eksemplar;
@@ -139,26 +167,23 @@ const createTransaksi = async (req, res) => {
     };
 
     const date = new Date();
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, 0);
-    const year = date.getFullYear().toString().slice(-2);
-    const formattedDate = `${day}-${month}-${year}`;
-    const splitDate = formattedDate.split(" ")[0];
+    const formattedDate = date.toISOString().split("T")[0]; // YYYY-MM-DD
 
-    // Buat transaksi di Midtrans
+    // Create transaction in Midtrans
     const transaction = await snap.createTransaction(transactionDetails);
 
-    // Simpan transaksi di database
+    // Save transaction in database
     await DataTransaksiModels.create({
       order_id: transactionDetails.transaction_details.order_id,
       gross_amount: transactionDetails.transaction_details.gross_amount,
       namaKoran,
       eksemplar,
-      tanggal: splitDate,
+      tanggal: formattedDate,
       status: "pending",
-      isValid,
+      isValid: isValid || false,
       email,
       phone,
+      statusCetak: "belum-dicetak",
       id_koran,
     });
 
@@ -170,7 +195,6 @@ const createTransaksi = async (req, res) => {
     res.status(500).send(error.message);
   }
 };
-
 const successPayment = async (req, res) => {
   try {
     const { order_id } = req.body;
@@ -246,7 +270,7 @@ const editTransaksi = async (req, res) => {
       tanggal,
       totalHarga,
       jumlahPlate,
-      status,
+      statusCetak,
       isValid,
     } = req.body;
 
@@ -267,7 +291,7 @@ const editTransaksi = async (req, res) => {
       tanggal: tanggal,
       totalHarga: totalHarga,
       jumlahPlate: jumlahPlate,
-      status: status,
+      statusCetak: statusCetak,
       isValid: isValid,
     });
 
@@ -306,4 +330,5 @@ module.exports = {
   getTransaksi,
   getTransaksiByEmail,
   successPayment,
+  getTransaksiByStatus,
 };

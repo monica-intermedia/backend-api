@@ -58,7 +58,7 @@ const createBarang = async (req, res) => {
 
     const check = await BarangModels.findAll({
       where: {
-        [Op.or]: [{ namaBarang: namaBarang }, { kodeBarang: kodeBarang }],
+        [Op.or]: [{ namaBarang: namaBarang }],
       },
     });
 
@@ -68,7 +68,6 @@ const createBarang = async (req, res) => {
 
     const data = await BarangModels.create({
       namaBarang: namaBarang,
-      kodeBarang: kodeBarang,
       harga: harga,
       stok: stok,
     });
