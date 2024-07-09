@@ -36,7 +36,7 @@ const getTipeKoranById = async (req, res) => {
 
 const createTipeKoran = async (req, res) => {
   try {
-    const { keterangan, halaman, warna, plate, harga } = req.body;
+    const { keterangan, halaman, warna, plate, harga, id_barang } = req.body;
 
     const data = await KoranModels.create({
       keterangan,
@@ -44,6 +44,7 @@ const createTipeKoran = async (req, res) => {
       warna,
       plate,
       harga,
+      id_barang,
     });
 
     return handle201(req, res, data, "tipe koran");

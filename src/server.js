@@ -35,7 +35,7 @@ const koranRoute = require("./routes/koran.routes.js");
 const db = require("./config/config");
 
 // // Jangan gunakan force: true dalam produksi, ini hanya untuk pengembangan
-// db.sync({ alter: true })
+// db.sync({ force: true })
 //   .then(() => {
 //     console.log("Database synced");
 //   })

@@ -6,6 +6,7 @@ const {
   getDataTransaksi,
   getTransaksiById,
   createTransaksi,
+  createTransaksiAdmin,
   editTransaksi,
   deleteTransaksi,
   getTransaksiByEmail,
@@ -19,6 +20,7 @@ router.get("/penjualan/transaksistatus", getTransaksiByStatus);
 router.get("/penjualan/datatransaksi/email", getTransaksiByEmail);
 router.get("/penjualan/transaksi/:id", getTransaksiById);
 router.post("/penjualan/transaksi", createTransaksi);
+router.post("/penjualan/transaksiAdmin", createTransaksiAdmin);
 router.put("/penjualan/transaksi/:id", editTransaksi);
 router.delete("/penjualan/transaksi/:id", deleteTransaksi);
 router.post("/penjualan/transaksi/success", successPayment);

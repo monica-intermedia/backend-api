@@ -1,6 +1,5 @@
 const midtransClient = require("midtrans-client");
 const { nanoid } = require("nanoid");
-const jwt = require("jsonwebtoken");
 const {
   handle200,
   handle201,
@@ -9,6 +8,7 @@ const {
 } = require("../utils/response");
 const DataTransaksiModels = require("../models/data.transaksi.models");
 const KoranModels = require("../models/koran.models");
+const BarangModels = require("../models/barang.models");
 
 let snap = new midtransClient.Snap({
   isProduction: false,
@@ -130,17 +130,62 @@ const getTransaksiByEmail = async (req, res) => {
 
 const createTransaksi = async (req, res) => {
   try {
-    const { namaKoran, email, eksemplar, phone, isValid, id_koran } = req.body;
+    const {
+      namaKoran,
+      email,
+      eksemplar,
+      phone,
+      isValid,
+      id_koran,
+      id_barang,
+      quantity,
+    } = req.body;
+
+    if (
+      namaKoran ||
+      email ||
+      eksemplar ||
+      phone ||
+      id_koran ||
+      id_barang ||
+      quantity
+    ) {
+      console.log("parameter ada yang kurang");
+    }
+
+    console.log({
+      namaKoran,
+      email,
+      eksemplar,
+      phone,
+      isValid,
+      id_koran,
+      id_barang,
+      quantity,
+    });
 
     const order_id = `TRX-${nanoid(4)}-${nanoid(8)}`;
 
-    const koranData = await KoranModels.findOne({
-      where: { id: id_koran },
-    });
-
+    // Check if id matches id_koran
+    const koranData = await KoranModels.findOne({ where: { id: id_koran } });
     if (!koranData) {
       return res.status(400).json({ message: "Koran not found" });
     }
+
+    // Check if the barang exists
+    const barang = await BarangModels.findOne({ where: { id: id_barang } });
+    if (!barang) {
+      return res.status(404).json({ message: "Barang not found" });
+    }
+
+    // Check if there is sufficient stock in BarangModels
+    if (barang.stok < quantity) {
+      return res.status(400).json({ message: "Insufficient stock" });
+    }
+
+    // Deduct stock from BarangModels
+    barang.stok -= quantity;
+    await barang.save();
 
     const gross_amount = koranData.harga * eksemplar;
 
@@ -187,14 +232,99 @@ const createTransaksi = async (req, res) => {
       id_koran,
     });
 
-    const tokenaccess = jwt.sign({ order_id }, process.env.TRANSACTION_TOKEN);
-
-    res.status(201).json({ order_id, transaction, tokenaccess });
+    res.status(201).json({ order_id, transaction });
   } catch (error) {
     console.error("Error creating transaction:", error.message);
     res.status(500).send(error.message);
   }
 };
+
+const createTransaksiAdmin = async (req, res) => {
+  try {
+    const {
+      namaKoran,
+      email,
+      eksemplar,
+      phone,
+      isValid,
+      id_koran,
+      id_barang,
+      quantity,
+      statusCetak,
+    } = req.body;
+
+    if (
+      namaKoran ||
+      email ||
+      eksemplar ||
+      phone ||
+      id_koran ||
+      id_barang ||
+      quantity
+    ) {
+      console.log("parameter ada yang kurang");
+    }
+
+    console.log({
+      namaKoran,
+      email,
+      eksemplar,
+      phone,
+      isValid,
+      id_koran,
+      id_barang,
+      quantity,
+    });
+
+    const order_id = `TRX-${nanoid(4)}-${nanoid(8)}`;
+
+    // Check if id matches id_koran
+    const koranData = await KoranModels.findOne({ where: { id: id_koran } });
+    if (!koranData) {
+      return res.status(400).json({ message: "Koran not found" });
+    }
+
+    // Check if the barang exists
+    const barang = await BarangModels.findOne({ where: { id: id_barang } });
+    if (!barang) {
+      return res.status(404).json({ message: "Barang not found" });
+    }
+
+    // Check if there is sufficient stock in BarangModels
+    if (barang.stok < quantity) {
+      return res.status(400).json({ message: "Insufficient stock" });
+    }
+
+    // Deduct stock from BarangModels
+    barang.stok -= quantity;
+    await barang.save();
+
+    const gross_amount = koranData.harga * eksemplar;
+
+    const date = new Date();
+    const formattedDate = date.toISOString().split("T")[0]; // YYYY-MM-DD
+
+    const data = await DataTransaksiModels.create({
+      order_id: order_id,
+      gross_amount: gross_amount,
+      namaKoran,
+      eksemplar,
+      tanggal: formattedDate,
+      status: "success",
+      isValid: isValid || false,
+      email,
+      phone,
+      statusCetak,
+      id_koran,
+    });
+
+    res.status(201).json({ data: data });
+  } catch (error) {
+    console.error("Error creating transaction:", error.message);
+    res.status(500).send(error.message);
+  }
+};
+
 const successPayment = async (req, res) => {
   try {
     const { order_id } = req.body;
@@ -331,4 +461,5 @@ module.exports = {
   getTransaksiByEmail,
   successPayment,
   getTransaksiByStatus,
+  createTransaksiAdmin,
 };
