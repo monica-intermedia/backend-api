@@ -19,7 +19,7 @@ const getChartDataPegawai = async (req, res) => {
   }
 };
 
-const getChartDataSupplier = async (res) => {
+const getChartDataSupplier = async (req, res) => {
   try {
     const count = await SupllierModels.count();
 
@@ -34,7 +34,7 @@ const getChartDataSupplier = async (res) => {
   }
 };
 
-const getChartDataBarang = async (res) => {
+const getChartDataBarang = async (req, res) => {
   try {
     const count = await BarangModels.count();
 
@@ -49,7 +49,7 @@ const getChartDataBarang = async (res) => {
   }
 };
 
-const getDataTransaksi = async (res) => {
+const getDataTransaksi = async (req, res) => {
   try {
     const count = await TransaksiModels.count({
       where: {
