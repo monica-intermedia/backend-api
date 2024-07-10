@@ -5,6 +5,7 @@ const PegawaiModels = require("../models/pegawai.models");
 const SupllierModels = require("../models/supplier.models");
 const BarangModels = require("../models/barang.models");
 const TransaksiModels = require("../models/data.transaksi.models");
+const PenjualanLainyaModels = require("../models/penjualan.lainya.models");
 const { handle200, handle400, handle500 } = require("../utils/response");
 
 const getChartDataPegawai = async (req, res) => {
@@ -73,14 +74,30 @@ const getDataTransaksi = async (req, res) => {
 
 const getPendapatanMingguan = async (req, res) => {
   try {
-    const today = moment().startOf("day"); // Get the start of today
-    const oneWeekAgo = moment().subtract(6, "days").startOf("day"); // Get the start of 7 days ago
+    const today = moment().endOf("day").toDate(); // Get the end of today
+    const oneWeekAgo = moment().subtract(6, "days").startOf("day").toDate(); // Get the start of 7 days ago
 
-    const getTransaksiWeeks = await TransaksiModels.findAll({
+    // Fetch PenjualanLainya data
+    const penjualanLainya = await PenjualanLainyaModels.findAll({
+      where: {
+        tanggal: {
+          [Op.between]: [oneWeekAgo, today],
+        },
+      },
+      attributes: [
+        [fn("DATE", col("tanggal")), "date"],
+        [fn("SUM", col("totalHarga")), "totalHarga"],
+      ],
+      group: [fn("DATE", col("tanggal"))],
+      order: [[fn("DATE", col("tanggal")), "ASC"]],
+    });
+
+    // Fetch Transaksi data
+    const transaksi = await TransaksiModels.findAll({
       where: {
         status: "success",
         createdAt: {
-          [Op.between]: [oneWeekAgo.toDate(), today.toDate()],
+          [Op.between]: [oneWeekAgo, today],
         },
       },
       attributes: [
@@ -91,10 +108,37 @@ const getPendapatanMingguan = async (req, res) => {
       order: [[fn("DATE", col("createdAt")), "ASC"]],
     });
 
-    if (getTransaksiWeeks.length === 0) {
+    // Combine and sum data into a single gross_amount field
+    const combinedData = {};
+
+    penjualanLainya.forEach((entry) => {
+      const date = entry.dataValues.date;
+      combinedData[date] = {
+        date,
+        gross_amount: parseFloat(entry.dataValues.totalHarga) || 0,
+      };
+    });
+
+    transaksi.forEach((entry) => {
+      const date = entry.dataValues.date;
+      if (combinedData[date]) {
+        combinedData[date].gross_amount +=
+          parseFloat(entry.dataValues.gross_amount) || 0;
+      } else {
+        combinedData[date] = {
+          date,
+          gross_amount: parseFloat(entry.dataValues.gross_amount) || 0,
+        };
+      }
+    });
+
+    // Convert combined data to an array
+    const result = Object.values(combinedData);
+
+    if (result.length === 0) {
       handle400(req, res, "fail get data");
     } else {
-      handle200(req, res, getTransaksiWeeks, "success get data");
+      handle200(req, res, result, "success get data");
     }
   } catch (error) {
     console.error(error);
@@ -115,7 +159,6 @@ const getTransaksiHariIni = async (req, res) => {
         },
       },
       attributes: [[fn("DATE", col("createdAt")), "date"], "namaKoran"],
-      group: [fn("DATE", col("createdAt"))],
       order: [[fn("DATE", col("createdAt")), "ASC"]],
     });
 
