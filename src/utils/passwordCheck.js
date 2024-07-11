@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const adminModels = require("../models/admin.models");
+const PegawaiModels = require("../models/pegawai.models");
 
 const passwordCheck = async (email, password) => {
   const userData = await adminModels.findOne({ where: { email: email } });
@@ -7,4 +8,10 @@ const passwordCheck = async (email, password) => {
   return { compare, userData };
 };
 
-module.exports = passwordCheck;
+const passwordCheckKaryawan = async (email, password) => {
+  const userData = await PegawaiModels.findOne({ where: { email: email } });
+  const compare = await bcrypt.compare(password, userData.password);
+  return { compare, userData };
+};
+
+module.exports = { passwordCheck, passwordCheckKaryawan };

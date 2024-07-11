@@ -1,5 +1,8 @@
 const jwt = require("jsonwebtoken");
-const passwordCheck = require("../utils/passwordCheck");
+const {
+  passwordCheck,
+  passwordCheckKaryawan,
+} = require("../utils/passwordCheck");
 const blacklist = require("../middleware/blacklist");
 const {
   handle200,
@@ -14,6 +17,34 @@ const login = async (req, res) => {
     const check = await passwordCheck(email, password);
 
     const secretKey = process.env.SECRET_PASSWORD;
+
+    const payload = {
+      id: id,
+      email: email,
+      password: password,
+    };
+
+    const token = jwt.sign(payload, secretKey, {
+      expiresIn: "3d",
+    });
+
+    const isData = check.compare
+      ? handle201(req, res, token, "login")
+      : handle400(req, res, "login fail");
+
+    return isData;
+  } catch (error) {
+    handle500(req, res, error);
+    console.error(error);
+  }
+};
+
+const loginKaryawan = async (req, res) => {
+  try {
+    const { id, email, password } = req.body;
+    const check = await passwordCheckKaryawan(email, password);
+
+    const secretKey = process.env.KARYAWAN_PASSWORD;
 
     const payload = {
       id: id,
@@ -57,4 +88,4 @@ const logout = (req, res) => {
   }
 };
 
-module.exports = { login, logout };
+module.exports = { login, logout, loginKaryawan };
