@@ -18,10 +18,6 @@ const AbsensiModels = db.define("absensi", {
     type: DataTypes.TIME,
     allowNull: true,
   },
-  waktuKeluar: {
-    type: DataTypes.TIME,
-    allowNull: true,
-  },
   gambar: {
     type: DataTypes.STRING(255),
     allowNull: true,

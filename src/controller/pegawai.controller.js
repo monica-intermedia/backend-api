@@ -56,17 +56,16 @@ const createPegawai = async (req, res) => {
       confPassword,
     } = req.body;
 
-    const existingUser = await PegawaiModels.findAll({
+    const existingUser = await PegawaiModels.findOne({
       where: { email: email },
     });
 
-    if (existingUser.length > 0) {
+    if (existingUser) {
       return handle400(req, res, "Position already available");
     }
 
-    if (!confPassword == password) {
-      console.log("password salah");
-      alert("password salah");
+    if (password !== confPassword) {
+      return handle400(req, res, "Password dan Confirm Password tidak sama");
     }
 
     const encryptedPassword = await bcrypt.hash(password, 10);
@@ -83,9 +82,10 @@ const createPegawai = async (req, res) => {
       password: encryptedPassword,
     });
 
-    return handle201(req, res, data, "jabatan");
+    return handle201(req, res, data, "Success post jabatan data");
   } catch (error) {
-    handle500(req, res, error);
+    console.error("Error creating pegawai:", error);
+    return handle500(req, res, "Internal server error");
   }
 };
 

@@ -47,7 +47,7 @@ const PegawaiModels = db.define("pegawai", {
     allowNull: false,
   },
   password: {
-    type: DataTypes.STRING(50),
+    type: DataTypes.STRING,
     allowNull: false,
   },
   id_jabatan: {

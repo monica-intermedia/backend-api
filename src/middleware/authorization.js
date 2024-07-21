@@ -1,18 +1,26 @@
 const jwt = require("jsonwebtoken");
 
 const authorization = (req, res, next) => {
-  const { authorization } = req.headers;
-  const token = authorization.split(" ")[1];
+  const authHeader = req.headers.authorization;
 
-  if (token == null) {
-    return res.sendStatus(401);
+  if (!authHeader) {
+    return res.sendStatus(401); // Unauthorized
   }
 
-  jwt.verify(token, process.env.TRANSACTION_TOKEN, (err, decoded) => {
+  const token = authHeader.split(" ")[1];
+
+  if (!token) {
+    return res.sendStatus(401); // Unauthorized
+  }
+
+  console.log(token);
+
+  jwt.verify(token, process.env.KARYAWAN_PASSWORD, (err, decoded) => {
     if (err) {
-      return res.sendStatus(403);
+      console.log(err);
+      return res.sendStatus(403); // Forbidden
     }
-    req.order_id = decoded.order_id;
+    req.id = decoded.id;
     next();
   });
 };

@@ -10,6 +10,8 @@ const {
   handle400,
   handle500,
 } = require("../utils/response");
+const bcrypt = require("bcrypt");
+const PegawaiModels = require("../models/pegawai.models");
 
 const login = async (req, res) => {
   try {
@@ -41,29 +43,47 @@ const login = async (req, res) => {
 
 const loginKaryawan = async (req, res) => {
   try {
-    const { id, email, password } = req.body;
-    const check = await passwordCheckKaryawan(email, password);
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return handle400(req, res, "Email atau password belum diisi");
+    }
+
+    const staff = await PegawaiModels.findOne({ where: { email: email } });
+
+    if (!staff) {
+      return handle400(req, res, "Email tidak ditemukan");
+    }
+
+    const comparePassword = await bcrypt.compare(password, staff.password);
+
+    console.log(comparePassword);
+
+    if (!comparePassword) {
+      return handle400(req, res, "Password salah");
+    }
 
     const secretKey = process.env.KARYAWAN_PASSWORD;
 
     const payload = {
-      id: id,
-      email: email,
-      password: password,
+      id: staff.id,
+      email: staff.email,
+      nama: staff.name,
     };
 
-    const token = jwt.sign(payload, secretKey, {
+    const data = jwt.sign(payload, secretKey, {
       expiresIn: "3d",
     });
 
-    const isData = check.compare
-      ? handle201(req, res, token, "login")
-      : handle400(req, res, "login fail");
+    const responseData = {
+      token: data,
+      payload: payload,
+    };
 
-    return isData;
+    return handle201(req, res, responseData, "Login berhasil");
   } catch (error) {
-    handle500(req, res, error);
-    console.error(error);
+    console.error("Terjadi kesalahan saat login:", error);
+    return handle500(req, res, "Internal server error");
   }
 };
 

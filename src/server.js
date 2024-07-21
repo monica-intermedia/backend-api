@@ -6,6 +6,8 @@ const cors = require("cors");
 require("dotenv").config();
 const startCronJobs = require("./middleware/startCronJobs.js");
 const WebSocket = require("ws");
+const bodyParser = require("body-parser");
+const path = require("path");
 
 // Create HTTP server
 const server = http.createServer(app);
@@ -35,7 +37,7 @@ const koranRoute = require("./routes/koran.routes.js");
 const db = require("./config/config");
 
 // // Jangan gunakan force: true dalam produksi, ini hanya untuk pengembangan
-// db.sync({ force: true })
+// db.sync({ alter: true })
 //   .then(() => {
 //     console.log("Database synced");
 //   })
@@ -48,6 +50,8 @@ const db = require("./config/config");
 //   socket.on("close", () => console.log("Client disconnected"));
 // });
 
+app.use(bodyParser.json({ limit: "10mb" }));
+app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 app.use(cors());
 app.use(express.json());
 // startCronJobs();
@@ -55,6 +59,18 @@ app.use(express.json());
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send("Something went wrong!");
+});
+
+const publicPath = path.join(__dirname, "public", "images", "absensi");
+
+app.get("/get-image-absensi", (req, res) => {
+  const imagePath = path.join(publicPath, "*");
+
+  res.sendFile(imagePath, (err) => {
+    if (err) {
+      res.status(404).send("File not found");
+    }
+  });
 });
 
 try {

@@ -9,9 +9,12 @@ const passwordCheck = async (email, password) => {
 };
 
 const passwordCheckKaryawan = async (email, password) => {
-  const userData = await PegawaiModels.findOne({ where: { email: email } });
-  const compare = await bcrypt.compare(password, userData.password);
-  return { compare, userData };
+  const staffData = await PegawaiModels.findOne({ where: { email: email } });
+  const compareStaff = await bcrypt.compare(password, staffData.password);
+
+  console.log(staffData.email);
+  console.log(compareStaff.password);
+  return { compareStaff, staffData };
 };
 
 module.exports = { passwordCheck, passwordCheckKaryawan };

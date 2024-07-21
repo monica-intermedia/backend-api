@@ -9,6 +9,6 @@ const { authorization } = require("../middleware/authorization");
 
 router.post("/auth/login", login);
 router.delete("/auth/logout", logout);
-router.post("/auth/loginkaryawan", authorization, loginKaryawan);
+router.post("/auth/loginkaryawan", loginKaryawan);
 
 module.exports = router;
