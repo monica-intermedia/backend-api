@@ -11,7 +11,7 @@ const AbsensiModels = db.define("absensi", {
     defaultValue: DataTypes.UUIDV4,
   },
   tanggal: {
-    type: DataTypes.DATE,
+    type: DataTypes.DATEONLY,
     allowNull: false,
   },
   waktuMasuk: {

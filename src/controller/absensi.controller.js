@@ -71,7 +71,7 @@ const createAbsensi = async (req, res) => {
     const waktuMasuk = moment().tz("Asia/Jakarta").format("HH:mm:ss");
     let keterangan = "Telat";
 
-    const batasWaktu = moment.tz("23:30:00", "HH:mm:ss", "Asia/Jakarta");
+    const batasWaktu = moment.tz("08:30:00", "HH:mm:ss", "Asia/Jakarta");
     const waktuSekarang = moment.tz(waktuMasuk, "HH:mm:ss", "Asia/Jakarta");
 
     if (waktuSekarang.isSameOrBefore(batasWaktu)) {
