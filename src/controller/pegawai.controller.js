@@ -53,7 +53,6 @@ const createPegawai = async (req, res) => {
       gaji,
       id_jabatan,
       password,
-      confPassword,
     } = req.body;
 
     const existingUser = await PegawaiModels.findOne({
@@ -62,10 +61,6 @@ const createPegawai = async (req, res) => {
 
     if (existingUser) {
       return handle400(req, res, "Position already available");
-    }
-
-    if (password !== confPassword) {
-      return handle400(req, res, "Password dan Confirm Password tidak sama");
     }
 
     const encryptedPassword = await bcrypt.hash(password, 10);

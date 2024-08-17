@@ -1,12 +1,47 @@
 const PembelianBarangModels = require("../models/pembelian.barang.models");
 const BarangModels = require("../models/barang.models");
 const SupplierModels = require("../models/supplier.models");
+const { Op } = require("sequelize");
 const {
   handle200,
   handle201,
   handle400,
   handle500,
 } = require("../utils/response");
+
+const getPembelianByDate = async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query;
+
+    console.log({ startDate, endDate });
+    const data = await PembelianBarangModels.findAll({
+      where: {
+        tanggal: {
+          [Op.between]: [new Date(startDate), new Date(endDate)],
+        },
+      },
+      include: [
+        {
+          model: BarangModels,
+          attributes: ["namaBarang"],
+        },
+        {
+          model: SupplierModels,
+          attributes: ["name"],
+        },
+      ],
+      order: [["tanggal", "ASC"]],
+    });
+
+    const isData = data
+      ? handle200(req, res, data, "all")
+      : handle400(req, res, "invalid paramaters");
+
+    return isData;
+  } catch (error) {
+    handle500(req, res, error);
+  }
+};
 
 const getPembelian = async (req, res) => {
   const data = await PembelianBarangModels.findAll({
@@ -159,4 +194,5 @@ module.exports = {
   editPembelian,
   deletePembelian,
   getPembelianById,
+  getPembelianByDate,
 };

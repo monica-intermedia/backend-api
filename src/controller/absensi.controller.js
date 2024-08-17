@@ -14,6 +14,26 @@ const getAbsensi = async (req, res) => {
   const data = await AbsensiModels.findAll({
     include: {
       model: PegawaiModels,
+      attributes: ["name", "nip"],
+    },
+  });
+
+  try {
+    const isData = data
+      ? handle200(req, res, data, "all")
+      : handle400(req, res, "invalid paramaters");
+
+    return isData;
+  } catch (error) {
+    handle500(req, res, error);
+  }
+};
+
+const getAbsensiByDate = async (req, res) => {
+  const { startDate, endDate } = req.body;
+  const data = await AbsensiModels.findAll({
+    include: {
+      model: PegawaiModels,
       attributes: ["name"],
     },
   });
@@ -183,4 +203,5 @@ module.exports = {
   deleteAbsensi,
   getAbensiById,
   getAbensiByUser,
+  getAbsensiByDate,
 };

@@ -10,7 +10,7 @@ const {
 } = require("../controller/absensi.controller");
 const { authorization } = require("../middleware/authorization");
 
-router.get("/pegawai/absensi", authorization, getAbsensi);
+router.get("/pegawai/absensi", getAbsensi);
 router.get("/pegawai/absensi/:id", authorization, getAbensiById);
 router.get("/pegawai/absensiuser/:id", authorization, getAbensiByUser);
 router.post("/pegawai/absensi", authorization, createAbsensi);
