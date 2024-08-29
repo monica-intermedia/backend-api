@@ -23,6 +23,7 @@ const getTransaksi = async (req, res) => {
         model: KoranModels,
         attributes: ["halaman", "warna", "plate", "harga"],
       },
+      order: [["tanggal", "DESC"]],
     });
     return data
       ? handle200(req, res, data, "all")
